@@ -11,16 +11,17 @@ void Collision();	// 当たり判定まとめ
 /*
 *  2D判定
 */
-/* 引数のsizeは中心から辺までの距離とする(元プログラムに合わせるため)
-*  ----   --分がsize
-*  | * |
-*  ----
-*/
+// 22/07/15 sizeの定義を1辺の長さに修正
+///* 引数のsizeは中心から辺までの距離とする(元プログラムに合わせるため)
+//*  ----   ----分がsize
+//*  | * |
+//*  ----
+//*/
 // バウンディングポイントボックス(BPB)
 /*@brief: 2DPoint & 2DBox
 * [in]	: pPoint1	点
 * [in]	: pCenter2	中心
-* [in]	: pSize2	中心から辺までの長さ
+* [in]	: pSize2	辺の長さ
 */
 bool CollisionBPB(
 	XMFLOAT2* pPoint1,
@@ -39,9 +40,9 @@ bool CollisionBPC(
 // バウンディングボックス(BB2D)
 /*@brief: 2DBox & 2DBox
 * [in]	: pCenter1	中心
-* [in]	: pSize1	中心から辺までの長さ
+* [in]	: pSize1	辺の長さ
 * [in]	: pCenter2	中心
-* [in]	: pSize2	中心から辺までの長さ
+* [in]	: pSize2	辺の長さ
 */
 bool CollisionBB2D(
 	XMFLOAT2* pCenter1, XMFLOAT2* pSize1,
@@ -61,7 +62,7 @@ bool CollisionBC(
 // バウンディングボックスサークル(BBC)
 /*@brief: 2Dbox & 2DCircle
 * [in]	: pCenter1	中心
-* [in]	: pSize1	中心から辺までの長さ
+* [in]	: pSize1	辺の長さ
 * [in]	: pCenter2	中心
 * [in]	: pRadius2	半径
 */
@@ -76,9 +77,9 @@ bool CollisionBBC(
 // バウンティングボックス(BB3D)
 /*@brief: 2DCube & 2DCube
 * [in]	: pCenter1	中心
-* [in]	: pSize1	中心から辺までの長さ
+* [in]	: pSize1	辺の長さ
 * [in]	: pCenter2	中心
-* [in]	: pSize2	中心から辺までの長さ
+* [in]	: pSize2	辺の長さ
 */
 bool CollisionBB3D(
 	XMFLOAT3* pCenter1, XMFLOAT3* pSize1,
@@ -98,7 +99,7 @@ bool CollisionBS(
 // バウンディングボックススフィア(BBS)
 /*@brief: 3DCube & 3DSphere
 * [in]	: pCenter1	中心
-* [in]	: pSize1	中心から辺までの長さ
+* [in]	: pSize1	辺の長さ
 * [in]	: pCenter2	中心
 * [in]	: pRadius2	半径
 */
@@ -109,10 +110,10 @@ bool CollisionBBS(
 // バウンディングシリンダー(BCy)
 /*@brief: 3DCylinder & 3DCylinder
 * [in]	: pCenter1	中心
-* [in]	: height1	中心から登頂までの高さ
+* [in]	: height1	円柱の高さ
 * [in]	: pRadius1	半径
 * [in]	: pCenter2	中心
-* [in]	: height2	中心から登頂までの高さ
+* [in]	: height2	円柱の高さ
 * [in]	: pRadius2	半径
 */
 bool CollisionBCy(

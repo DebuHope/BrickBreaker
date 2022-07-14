@@ -168,6 +168,14 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Combo.cpp" />
+    <ClCompile Include="CustomInput.cpp" />
+    <ClCompile Include="D2DDrawMng.cpp" />
+    <ClCompile Include="D2DFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="D2DRenderTargetsAndDWrite.cpp" />
+    <ClCompile Include="D2DText.cpp" />
+    <ClCompile Include="DebugFunctions.cpp" />
     <ClCompile Include="Debugproc.cpp" />
     <ClCompile Include="DEnemy.cpp" />
     <ClCompile Include="EffekseerManeger.cpp" />
@@ -206,6 +214,14 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Combo.h" />
+    <ClInclude Include="CustomInput.h" />
+    <ClInclude Include="D2DDrawMng.h" />
+    <ClInclude Include="D2DFunctions.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="D2DRenderTargetsAndDWrite.h" />
+    <ClInclude Include="D2DText.h" />
+    <ClInclude Include="DebugFunctions.h" />
     <ClInclude Include="Debugproc.h" />
     <ClInclude Include="DEnemy.h" />
     <ClInclude Include="EffekseerManeger.h" />

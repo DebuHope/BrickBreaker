@@ -244,11 +244,11 @@ bool CollisionBPB(XMFLOAT2 * pPoint1, XMFLOAT2 * pCenter2, XMFLOAT2 * pSize2)
 	float fx = pPoint1->x - pCenter2->x;
 	float fy = pPoint1->y - pCenter2->y;
 	// x
-	if ( pPoint1->x <= pCenter2->x + pSize2->x &&
-		 pPoint1->x >= pCenter2->x - pSize2->x )
+	if ( pPoint1->x <= pCenter2->x + pSize2->x / 2 &&
+		 pPoint1->x >= pCenter2->x - pSize2->x / 2)
 		// y
-		if( pPoint1->y <= pCenter2->y + pSize2->y &&
-			pPoint1->y >= pCenter2->y - pSize2->y ) {
+		if( pPoint1->y <= pCenter2->y + pSize2->y / 2 &&
+			pPoint1->y >= pCenter2->y - pSize2->y / 2) {
 		return true;
 	}
 	// 当たらなかった
@@ -271,15 +271,15 @@ bool CollisionBPC(XMFLOAT2 * pPoint1, XMFLOAT2 * pCenter2, float pRadius2)
 // 矩形と矩形
 bool CollisionBB2D( XMFLOAT2 * pCenter1, XMFLOAT2 * pSize1, XMFLOAT2 * pCenter2, XMFLOAT2 * pSize2 )
 {
-	if( pCenter1->x + pSize1->x >= 
-		pCenter2->x - pSize2->x && 
-		pCenter1->x - pSize1->x <=
-		pCenter2->x + pSize2->x )
+	if( pCenter1->x + pSize1->x / 2 >= 
+		pCenter2->x - pSize2->x / 2 && 
+		pCenter1->x - pSize1->x / 2 <=
+		pCenter2->x + pSize2->x / 2 )
 	{	// X方向が当たっている
-		if( pCenter1->y + pSize1->y >=
-			pCenter2->y - pSize2->y &&
-			pCenter1->y - pSize1->y <=
-			pCenter2->y + pSize2->y )
+		if( pCenter1->y + pSize1->y / 2 >=
+			pCenter2->y - pSize2->y / 2 &&
+			pCenter1->y - pSize1->y / 2 <=
+			pCenter2->y + pSize2->y / 2 )
 		{	// Y方向も当たっている
 			return true;
 		}
@@ -316,10 +316,10 @@ bool CollisionBBC(XMFLOAT2 * pCenter1, XMFLOAT2 * pSize1, XMFLOAT2 * pCenter2, f
 {
 	// 矩形を定義
 	float left, top, right, bottom;
-	left = pCenter1->x - pSize1->x;
-	top = pCenter1->y + pSize1->y;
-	right = pCenter1->x + pSize1->x;
-	bottom = pCenter1->y - pSize1->y;
+	left   = pCenter1->x - pSize1->x / 2;
+	top    = pCenter1->y + pSize1->y / 2;
+	right  = pCenter1->x + pSize1->x / 2;
+	bottom = pCenter1->y - pSize1->y / 2;
 #pragma region after
 	/* 改変後 */
 	// 判定順を変え、早期にfalseを取るようにした
@@ -419,20 +419,20 @@ bool CollisionBBC(XMFLOAT2 * pCenter1, XMFLOAT2 * pSize1, XMFLOAT2 * pCenter2, f
 // 直方体と直方体
 bool CollisionBB3D(XMFLOAT3* pCenter1, XMFLOAT3* pSize1, XMFLOAT3* pCenter2, XMFLOAT3* pSize2)
 {
-	if (pCenter1->x + pSize1->x >=
-		pCenter2->x - pSize2->x &&
-		pCenter1->x - pSize1->x <=
-		pCenter2->x + pSize2->x)
+	if (pCenter1->x + pSize1->x / 2 >=
+		pCenter2->x - pSize2->x / 2 &&
+		pCenter1->x - pSize1->x / 2 <=
+		pCenter2->x + pSize2->x / 2)
 	{	// X方向が当たっている
-		if (pCenter1->y + pSize1->y >=
-			pCenter2->y - pSize2->y &&
-			pCenter1->y - pSize1->y <=
-			pCenter2->y + pSize2->y)
+		if (pCenter1->y + pSize1->y / 2 >=
+			pCenter2->y - pSize2->y / 2 &&
+			pCenter1->y - pSize1->y / 2 <=
+			pCenter2->y + pSize2->y / 2)
 		{	// Y方向も当たっている
-			if (pCenter1->z + pSize1->z >=
-				pCenter2->z - pSize2->z &&
-				pCenter1->z - pSize1->z <=
-				pCenter2->z + pSize2->z)
+			if (pCenter1->z + pSize1->z / 2 >=
+				pCenter2->z - pSize2->z / 2 &&
+				pCenter1->z - pSize1->z / 2 <=
+				pCenter2->z + pSize2->z / 2)
 			{	// X軸方向も当たっている
 				return true;
 			}
@@ -458,7 +458,7 @@ bool CollisionBS(XMFLOAT3* pCenter1, float fRadius1, XMFLOAT3* pCenter2, float f
 	return false;		// 当たってない
 }
 
-// 立方体と球
+// ボックスとスフィア
 /*     
 *     4_______5
 *	  /|     /|
@@ -470,13 +470,13 @@ bool CollisionBBS(XMFLOAT3 * pCenter1, XMFLOAT3 * pSize1, XMFLOAT3 * pCenter2, f
 {
 	// 矩形を定義
 	float left, top, right, bottom;
-	left = pCenter1->x - pSize1->x;
-	top = pCenter1->y + pSize1->y;
-	right = pCenter1->x + pSize1->x;
-	bottom = pCenter1->y - pSize1->y;
+	left   = pCenter1->x - pSize1->x / 2;
+	top    = pCenter1->y + pSize1->y / 2;
+	right  = pCenter1->x + pSize1->x / 2;
+	bottom = pCenter1->y - pSize1->y / 2;
 	// zパラメータを定義
-	float z_p = pCenter1->z + pSize1->z;
-	float z_m = pCenter1->z - pSize1->z;
+	float z_p = pCenter1->z + pSize1->z / 2;
+	float z_m = pCenter1->z - pSize1->z / 2;
 
 	//矩形に円の半径分を足した範囲(早期判定領域)
 	if (left - fRadius2 > pCenter2->x ||
@@ -561,10 +561,10 @@ bool CollisionBBS(XMFLOAT3 * pCenter1, XMFLOAT3 * pSize1, XMFLOAT3 * pCenter2, f
 // 円柱と円柱
 bool CollisionBCy(XMFLOAT3* pCenter1, float height1, float fRadius1, XMFLOAT3* pCenter2, float height2, float fRadius2)
 {
-	if (pCenter1->y + height1 >=
-		pCenter2->y - height2 &&
-		pCenter1->y - height1 <=
-		pCenter2->y + height2)
+	if (pCenter1->y + height1 / 2 >=
+		pCenter2->y - height2 / 2 &&
+		pCenter1->y - height1 / 2 <=
+		pCenter2->y + height2 / 2)
 	{	// Y軸方向が範囲内
 		float fx = pCenter1->x - pCenter2->x;
 		float fz = pCenter1->z - pCenter2->z;
