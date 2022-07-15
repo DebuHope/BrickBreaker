@@ -457,7 +457,7 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 		break;
 	}
 
-	PlaySound(SOUND_LABEL_BGM01);
+	//PlaySound(SOUND_LABEL_BGM01);
 	StartSceneChange(SCENE_SELECT);	// ゲーム起動時：タイトル画面
 
 	return hr;
@@ -591,13 +591,6 @@ void Update(void)
 	//SetHiragana(true);	// ひらがな表示ON
 
 	PrintDebugProc("FPS   :%d\n\n", g_nCountFPS);
-	PrintDebugProc("Joy X :%d\n\n", (int)GetJoyX(0));
-	PrintDebugProc("Joy Y :%d\n\n", (int)GetJoyY(0));
-	PrintDebugProc("Joy Z :%d\n\n", (int)GetJoyZ(0));
-	PrintDebugProc("+ key :%d\n\n", (int)GetJoyPOVTrigger(0));
-	PrintDebugProc("JoyCnt:%d\n\n", t);
-	PrintDebugProc("state:%d\n\n", GetState());
-	PrintDebugProc("PlayerPosZ:%0.1f X:%0.1f\n\n", GetPlayerPos(0).y, GetPlayerPos(0).x);
 #endif // _DEBUG
 
 	switch (g_currentScene)
@@ -670,7 +663,7 @@ void Draw(void)
 	// 3D空間中に描画するものはここ
 
 	// 光源処理無効
-	GetLight()->SetDisable();
+	GetLight()->SetEnable();
 
 	// シーン毎に切り替える
 	switch (g_currentScene)

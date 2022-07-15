@@ -55,7 +55,7 @@ void CCamera::Init()
 // ビュー/プロジェクション マトリックス更新
 void CCamera::Update()
 {
-#ifdef CAMERA_DEBUG
+#ifdef _DEBUG
 	// Camera.h　に　CAMERA_DEBUGが定義されているとここが実行される
 	// カメラ移動
 	float dx = 0.0f, dy = 0.0f, dz = 0.0f;
@@ -188,7 +188,7 @@ void CCamera::Update()
 
 	PrintDebugProc("ﾘｾｯﾄ      : R\n");
 	PrintDebugProc("\n");
-#endif // CAMERA_DEBUG
+#endif // _DEBUG
 
 	// ビュー/プロジェクション マトリックス更新
 	UpdateMatrix();

@@ -27,7 +27,3 @@ bool IsPlayer(int no);
 void DestroyPlayer(int no);
 
 XMFLOAT3 GetPlayerVel(int no);
-
-float GetPlayerDashCount();
-float GetPlayerJumpCount();
-float GetPlayerSlide();

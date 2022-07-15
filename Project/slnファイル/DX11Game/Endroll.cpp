@@ -8,39 +8,14 @@
 #include "main.h"
 #include "Player.h"
 #include "Shadow.h"
+#include "Input.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define CREDIT01	"data/model/text/CREATOR.fbx"
-#define CREDIT02	"data/model/text/SO MUKAIDE.fbx"
-#define CREDIT03	"data/model/text/DEVELOPMENT.fbx"
-#define CREDIT04	"data/model/text/Visual studio 2017.fbx"
-#define CREDIT05	"data/model/text/DirectX 11.fbx"
-#define CREDIT06	"data/model/text/C++.fbx"
-#define CREDIT07	"data/model/text/MATERIAL.fbx"
-#define CREDIT08	"data/model/text/SOUND.fbx"
-#define CREDIT09	"data/model/text/LABO.fbx"
-#define CREDIT10	"data/model/text/MGURO.fbx"
-#define CREDIT11	"data/model/text/3D MODEL.fbx"
-#define CREDIT12	"data/model/text/Voxel Town Vol1.fbx"
-#define CREDIT13	"data/model/text/Voxel Town Vol2.fbx"
-#define CREDIT14	"data/model/text/low-poly-cars-3d-model.fbx"
-#define CREDIT15	"data/model/text/ENEMY.fbx"
-#define CREDIT16	"data/model/text/PLiCy.fbx"
-#define CREDIT17	"data/model/text/SOFTWARE.fbx"
-#define CREDIT18	"data/model/text/GIMP.fbx"
-#define CREDIT19	"data/model/text/Photoshop.fbx"
-#define CREDIT20	"data/model/text/Blender.fbx"
-#define CREDIT21	"data/model/text/MAYA.fbx"
-#define CREDIT22	"data/model/text/TEST PLAY.fbx"
-#define CREDIT23	"data/model/text/MASAYA KATO.fbx"
-#define CREDIT24	"data/model/text/SHOEI HIRAMATSU.fbx"
-#define CREDIT25	"data/model/text/TOMOYA FUJIOKA.fbx"
-#define CREDIT26	"data/model/text/YU OSHIMA.fbx"
-#define CREDIT27	"data/model/text/THANK_YOU_FOR_PLAYING.fbx"
+#define CREDIT01	"data/model/text/ball_01.fbx"
 
-#define MAX_TEXT_MODEL		(27)
+#define MAX_TEXT_MODEL		(1)
 
 #define TEXT_SPEED		(1.0f)
 
@@ -70,6 +45,10 @@ typedef struct _tText
 static CAssimpModel	g_model[MAX_TEXT_MODEL];	// モデルデータ
 static tText			g_text[MAX_TEXT];
 
+float speed = 0.8f;
+float angleX = 0.0f;
+float angleY = 0.0f;
+
 HRESULT LoadText(void)
 {
 	HRESULT hr = S_OK;
@@ -77,60 +56,7 @@ HRESULT LoadText(void)
 	ID3D11DeviceContext* pDeviceContext = GetDeviceContext();
 
 	// モデルデータの読み込み
-	hr = g_model[0].Load(pDevice, pDeviceContext,
-		CREDIT01);
-	hr = g_model[1].Load(pDevice, pDeviceContext,
-		CREDIT02);
-	hr = g_model[2].Load(pDevice, pDeviceContext,
-		CREDIT03);
-	hr = g_model[3].Load(pDevice, pDeviceContext,
-		CREDIT04);
-	hr = g_model[4].Load(pDevice, pDeviceContext,
-		CREDIT05);
-	hr = g_model[5].Load(pDevice, pDeviceContext,
-		CREDIT06);
-	hr = g_model[6].Load(pDevice, pDeviceContext,
-		CREDIT07);
-	hr = g_model[7].Load(pDevice, pDeviceContext,
-		CREDIT08);
-	hr = g_model[8].Load(pDevice, pDeviceContext,
-		CREDIT09);
-	hr = g_model[9].Load(pDevice, pDeviceContext,
-		CREDIT10);
-	hr = g_model[10].Load(pDevice, pDeviceContext,
-		CREDIT11);
-	hr = g_model[11].Load(pDevice, pDeviceContext,
-		CREDIT12);
-	hr = g_model[12].Load(pDevice, pDeviceContext,
-		CREDIT13);
-	hr = g_model[13].Load(pDevice, pDeviceContext,
-		CREDIT14);
-	hr = g_model[14].Load(pDevice, pDeviceContext,
-		CREDIT15);
-	hr = g_model[15].Load(pDevice, pDeviceContext,
-		CREDIT16);
-	hr = g_model[16].Load(pDevice, pDeviceContext,
-		CREDIT17);
-	hr = g_model[17].Load(pDevice, pDeviceContext,
-		CREDIT18);
-	hr = g_model[18].Load(pDevice, pDeviceContext,
-		CREDIT19);
-	hr = g_model[19].Load(pDevice, pDeviceContext,
-		CREDIT20);
-	hr = g_model[20].Load(pDevice, pDeviceContext,
-		CREDIT21);
-	hr = g_model[21].Load(pDevice, pDeviceContext,
-		CREDIT22);
-	hr = g_model[22].Load(pDevice, pDeviceContext,
-		CREDIT23);
-	hr = g_model[23].Load(pDevice, pDeviceContext,
-		CREDIT24);
-	hr = g_model[24].Load(pDevice, pDeviceContext,
-		CREDIT25);
-	hr = g_model[25].Load(pDevice, pDeviceContext,
-		CREDIT26);
-	hr = g_model[26].Load(pDevice, pDeviceContext,
-		CREDIT27);
+	hr = g_model[0].Load(pDevice, pDeviceContext, CREDIT01);
 
 	return hr;
 }
@@ -143,11 +69,11 @@ void InitText(void)
 	// 位置・回転・スケールの初期設定
 	for (int i = 0; i < MAX_TEXT; i++)
 	{
-		g_text[i].pos = XMFLOAT3(0.0f, -1000.0f, 0.0f);
+		g_text[i].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_text[i].rot = XMFLOAT3(0.0f, 180.0f, 0.0f);
-		g_text[i].scl = XMFLOAT3(1.5f, 1.5f, 5.0f);
+		g_text[i].scl = XMFLOAT3(5.0f, 5.0f, 5.0f);
 		g_text[i].vel = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_text[i].nState = 0;	// 初期は存在しない
+		g_text[i].nState = 1;
 		g_text[i].KillFlag = false;
 	}
 
@@ -184,25 +110,48 @@ void UpdateText(void)
 	{
 		if (g_text[i].nState == 0)	continue;
 
-		// モデルの動きを記述するならここ========================================
+		if (GetKeyPress(VK_Z))
+		{
+			angleX -= 10.0f;
+		}
+		else if (GetKeyPress(VK_X))
+		{
+			angleX += 10.0f;
+		}
 
+		if (GetKeyPress(VK_C))
+		{
+			angleY -= 10.0f;
+		}
+		else if (GetKeyPress(VK_V))
+		{
+			angleY += 10.0f;
+		}
+
+		//				  原点    速度       角度
+		g_text[i].vel.x = 0.0f + speed * cosf(angleX * (M_PI / 180.0f));
+		g_text[i].vel.y = 0.0f + speed * sinf(angleY * (M_PI / 180.0f));
 		// キルフラグが立った場合
 		if (g_text[i].KillFlag == true) {
 			// 重力を座標に加算
 			g_text[i].vel.y -= 0.5f;
 		}
 
-		if (g_text[i].pos.z < GetPlayerPos(0).z + 3200.0f) {
+		// 位置の更新
+		g_text[i].pos.x += g_text[i].vel.x;
+		g_text[i].pos.y += g_text[i].vel.y;
+		g_text[i].pos.z += g_text[i].vel.z;
 
-			// 位置の更新
-			g_text[i].pos.x += g_text[i].vel.x;
-			g_text[i].pos.y += g_text[i].vel.y;
-			g_text[i].pos.z += g_text[i].vel.z;
+		// 画面外判定
+		if (g_text[i].pos.x > 98.0f || g_text[i].pos.x < -98.0f)
+		{	// 左右
+			angleX += 180.0f;
+			angleX = (int)angleX % 360;
 		}
-
-		// 画面に近づいたら消す
-		if (g_text[i].pos.z < GetPlayerPos(0).z - 5000.0f) {
-			DestroyText(i);
+		else if (g_text[i].pos.y > 98.0f || g_text[i].pos.y < -98.0f)
+		{	// 上下
+			angleY += 180.0f;
+			angleY = (int)angleY % 360;
 		}
 
 		// 影を消す
@@ -210,7 +159,6 @@ void UpdateText(void)
 			ReleaseShadow(g_text[i].nShadowIdx);
 			g_text[i].nShadowIdx = -1;
 		}
-		// ===================================================================
 
 		// ワールドマトリックスの初期化
 		XMMATRIX mtxWorld, mtxRot, mtxScl, mtxTranslate;
@@ -245,6 +193,11 @@ void UpdateText(void)
 
 		// 影の移動
 		MoveShadow(g_text[i].nShadowIdx, g_text[i].pos);
+
+#ifdef _DEBUG
+
+		PrintDebugProc("BallAngle X : %0.1f Y : %0.1f\n\n\n", angleX, angleY);
+#endif // _DEBUG
 	}
 }
 
@@ -316,11 +269,7 @@ XMFLOAT3 GetTextBBox(int no)
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 	// モデルからサイズ半分を所得
-	XMFLOAT3 size = g_model[g_text[no].nType].GetBBox();
-	return XMFLOAT3(
-		size.x * g_text[no].scl.x,
-		size.y * (g_text[no].scl.y),
-		size.z * g_text[no].scl.z);
+	return g_model[g_text[no].nType].GetBBox();
 }
 
 // 座標所得
@@ -338,7 +287,7 @@ XMFLOAT3 GetTextSize(int no)
 	if (no < 0 || no >= MAX_TEXT) {
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
-	return XMFLOAT3(g_text[no].scl.x * 2.0f, g_text[no].scl.y, g_text[no].scl.z);
+	return XMFLOAT3(g_text[no].scl.x, g_text[no].scl.y, g_text[no].scl.z);
 }
 
 // 生存しているか

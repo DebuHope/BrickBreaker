@@ -20,14 +20,17 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MODEL_RUN		"data/model/player/paddle.fbx"
+#define MODEL_RUN		"data/model/player/padlle_01.fbx"
 
 #define MAX_PLAYER_MODEL	(1)
 
 #define ROT_Y			(180.0f)
-#define VALUE_MOVE		(4.0f)
+#define VALUE_MOVE		(3.0f)
 #define VALUE_ROTATE	(5.0f)
 #define GRAVITY			(-0.50f)
+
+#define LIMIT_LEFT	-98
+#define LIMIT_RIGHT	98
 
 //*****************************************************************************
 // 構造体定義
@@ -84,9 +87,9 @@ void InitPlayer(void)
 	// 位置・回転・スケールの初期設定
 	for (int i = 0; i < MAX_PLAYER; i++)
 	{
-		//g_player[i].pos = XMFLOAT3(0.0f, 34.0f, 0.0f);
+		g_player[i].pos = XMFLOAT3(0.0f, -75.0f, 0.0f);
 		g_player[i].rot = XMFLOAT3(0.0f, ROT_Y, 0.0f);
-		g_player[i].scl = XMFLOAT3(3.0f, 3.0f, 3.0f);
+		g_player[i].scl = XMFLOAT3(15.0f, 1.0f, 1.0f);
 		g_player[i].vel = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_player[i].velXZ = XMFLOAT2(0.0f, 0.0f);
 		g_player[i].nPhase = 0;
@@ -146,120 +149,56 @@ void UpdatePlayer(void)
 	{
 		if (g_player[i].nState == 0)	continue;
 	
-		//if (GetKeyPress(VK_A))
-		//{
-		//	if (GetKeyPress(VK_W))		// 左上
-		//	{
-		//		g_player[i].vel.x = -VALUE_MOVE / 1.414f;
-		//		g_player[i].vel.z = VALUE_MOVE / 1.414f;
-		//	}
-		//	else if (GetKeyPress(VK_S))	// 左下
-		//	{
-		//		g_player[i].vel.x = -VALUE_MOVE / 1.414f;
-		//		g_player[i].vel.z = -VALUE_MOVE / 1.414f;
-		//	}
-		//	else						// 左
-		//	{
-		//		g_player[i].vel.x = -VALUE_MOVE;
-		//	}
-		//}
-		//// 右関連
-		//else if (GetKeyPress(VK_D))
-		//{
-		//	if (GetKeyPress(VK_W))		// 右上
-		//	{
-		//		g_player[i].vel.x = VALUE_MOVE / 1.414f;
-		//		g_player[i].vel.z = VALUE_MOVE / 1.414f;
-		//	}
-		//	else if (GetKeyPress(VK_S))	// 右下
-		//	{
-		//		g_player[i].vel.x = VALUE_MOVE / 1.414f;
-		//		g_player[i].vel.z = -VALUE_MOVE / 1.414f;
-		//	}
-		//	else						// 右
-		//	{
-		//		g_player[i].vel.x = VALUE_MOVE;
-		//	}
-		//}
-		//else if (GetKeyPress(VK_W))		// 上
-		//{
-		//	g_player[i].vel.z = VALUE_MOVE;
-		//}
-		//else if (GetKeyPress(VK_S))	// 下
-		//{
-		//	g_player[i].vel.z = -VALUE_MOVE;
-		//}
-		//// ========================================================
-
-		//// 回転
-		//if (GetKeyPress(VK_Q))
-		//{
-		//	g_player[i].rot.y -= VALUE_ROTATE;
-		//}
-		//else if (GetKeyPress(VK_E))
-		//{
-		//	g_player[i].rot.y += VALUE_ROTATE;
-		//}
-
-		//// カメラの角度所得
-		//CCamera* pCamera = GetCamera();
-		//float camerarot = pCamera->GetAngle().y;
-		//// 向いている方向に移動
-		//if (GetKeyPress(VK_UP))
-		//{
-		//	g_player[i].vel.x = SinDeg(camerarot) * VALUE_MOVE;
-		//	g_player[i].vel.z = CosDeg(camerarot) * VALUE_MOVE;
-		//}
-		//else if (GetKeyPress(VK_DOWN))
-		//{
-		//	g_player[i].vel.x = SinDeg(camerarot + 180.0f) * VALUE_MOVE;
-		//	g_player[i].vel.z = CosDeg(camerarot + 180.0f) * VALUE_MOVE;
-		//}
-		//else if (GetKeyPress(VK_LEFT))
-		//{
-		//	g_player[i].vel.x = SinDeg(camerarot - 90.0f) * VALUE_MOVE;
-		//	g_player[i].vel.z = CosDeg(camerarot - 90.0f) * VALUE_MOVE;
-		//}
-		//else if (GetKeyPress(VK_RIGHT))
-		//{
-		//	g_player[i].vel.x = SinDeg(camerarot + 90.0f) * VALUE_MOVE;
-		//	g_player[i].vel.z = CosDeg(camerarot + 90.0f) * VALUE_MOVE;
-		//}
-
-		float radius = g_player[i].angle * M_PI / 180.0f;
-
-		float add_x = cosf(radius) * g_player[i].scl.x;
-		float add_y = sinf(radius) * g_player[i].scl.y;
-
-		// 向きを変える
-		if (GetKeyPress(VK_D))
+		// 左右移動
+		if (GetKeyPress(VK_A))
 		{
-			g_player[i].angle -= 5.0f;
-			g_player[i].pos.x = g_player[i].pos.x + add_x;
-			g_player[i].pos.y = g_player[i].pos.y + add_y;
+			g_player[i].vel.x = -VALUE_MOVE;
 		}
-		else if (GetKeyPress(VK_A))
+		else if (GetKeyPress(VK_D))
 		{
-			g_player[i].angle += 5.0f;
-			g_player[i].pos.x = g_player[i].pos.x - add_x;
-			g_player[i].pos.y = g_player[i].pos.y - add_y;
+			g_player[i].vel.x = VALUE_MOVE;
 		}
-		else
-		{
-			//g_player[i].pos.y += g_player[i].vel.y;
-		}
+
+#pragma region circular motion
+		//float radius = g_player[i].angle * M_PI / 180.0f;
+
+		//float add_x = cosf(radius) * g_player[i].scl.x;
+		//float add_y = sinf(radius) * g_player[i].scl.y;
+
+		//if (GetKeyPress(VK_D))
+		//{
+		//	g_player[i].angle -= 5.0f;
+		//	g_player[i].pos.x = g_player[i].pos.x + add_x;
+		//	g_player[i].pos.y = g_player[i].pos.y + add_y;
+		//}
+		//else if (GetKeyPress(VK_A))
+		//{
+		//	g_player[i].angle += 5.0f;
+		//	g_player[i].pos.x = g_player[i].pos.x - add_x;
+		//	g_player[i].pos.y = g_player[i].pos.y - add_y;
+		//}
+#pragma endregion
 
 		// 重力を座標に加算
 		//g_player[i].vel.y += GRAVITY;
 
 		// 速度を座標に加算
 		g_player[i].pos.x += g_player[i].vel.x;
-		//g_player[i].pos.y += g_player[i].vel.y;
-		g_player[i].pos.z += g_player[i].vel.z;
+		g_player[i].pos.y += g_player[i].vel.y;
 
 		// 初期化(キーを押していない間)
 		g_player[i].vel.x = 0.0f;
 		g_player[i].vel.z = 0.0f;
+
+		// 画面外判定
+		if (g_player[i].pos.x > 98.0f)
+		{
+			g_player[i].pos.x = 98.0f;
+		}
+		else if (g_player[i].pos.x < -98.0f)
+		{
+			g_player[i].pos.x = -98.0f;
+		}
 
 		//================================================================
 		XMMATRIX mtxWorld, mtxRot, mtxScl, mtxTranslate;
@@ -317,6 +256,10 @@ void UpdatePlayer(void)
 
 	if(DownFlag) InvincibleCount++;
 	if (InvincibleCount > 150) DownFlag = false;
+
+#ifdef _DEBUG
+	PrintDebugProc("PlayerPos X : %0.1f Y : %0.1f\n\n", GetPlayerPos(0).x, GetPlayerPos(0).y);
+#endif // _DEBUG
 }
 
 //=============================================================================
@@ -354,11 +297,7 @@ XMFLOAT3 GetPlayerBBox(int no)
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 	// モデルからサイズ半分を所得
-	XMFLOAT3 size = g_model[0].GetBBox();
-	return XMFLOAT3(
-		size.x * g_player[no].scl.x,
-		size.y * g_player[no].scl.y,
-		size.z * g_player[no].scl.z);
+	return g_model[0].GetBBox();
 }
 
 // 座標所得
@@ -406,19 +345,4 @@ XMFLOAT3 GetPlayerVel(int no)
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 	return g_player[no].vel;
-}
-
-float GetPlayerDashCount()
-{
-	return (float)DashCount / 120.0f;
-}
-
-float GetPlayerJumpCount()
-{
-	return (float)JumpCount / 40.0f;
-}
-
-float GetPlayerSlide()
-{
-	return (float)SlideCount / 50.0f;
 }

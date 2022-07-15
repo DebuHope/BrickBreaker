@@ -225,9 +225,6 @@ void DrawGame()
 			DrawCombo();
 			DrawLife();
 		}
-		if (GetPlayerDashCount() <= 1.0f)	DrawGaugeX(XMFLOAT2(-75.0f, -200.0f), XMFLOAT2(150.0f, 15.0f), GetPlayerDashCount(), 0);
-		if (GetPlayerJumpCount() <= 1.0f)	DrawGaugeY1(XMFLOAT2(-150.0f, -130.0f), XMFLOAT2(15.0f, 150.0f), GetPlayerJumpCount(), 1);
-		if (GetPlayerSlide() <= 1.0f)	DrawGaugeY2(XMFLOAT2(150.0f, -130.0f), XMFLOAT2(15.0f, 150.0f), GetPlayerSlide(), 2);
 	}
 	DrawUI();
 	if (GetSceneNo() != SCENE_ENDING) {

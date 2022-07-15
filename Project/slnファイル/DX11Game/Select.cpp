@@ -18,12 +18,14 @@
 #include "Shadow.h"
 #include "Score.h"
 
+#include "Endroll.h"
+
 //=============================================================================
 // 初期化処理
 //=============================================================================
 void InitSelect()
 {
-	//InitBg();
+	InitBg();
 	//InitUI();
 	InitStreet();
 	InitField();
@@ -31,6 +33,8 @@ void InitSelect()
 	InitPlayer();
 	InitDEnemy();
 	InitScore();
+
+	InitText();
 
 	SetDrawTexNo(UI_MAINSELECT);
 }
@@ -40,12 +44,14 @@ void InitSelect()
 //=============================================================================
 void UninitSelect()
 {
-	//UninitBg();
+	UninitBg();
 	//UninitUI();
 	UninitStreet();
 	UninitField();
 	UninitObject();
 	UninitPlayer();
+
+	UninitText();
 }
 
 //=============================================================================
@@ -53,12 +59,14 @@ void UninitSelect()
 //=============================================================================
 void UpdateSelect()
 {
-	//UpdateBg();
+	UpdateBg();
 	//UpdateUI();
 	UpdateStreet();
 	UpdateField();
 	UpdateObject();
 	UpdatePlayer();
+
+	UpdateText();
 
 	if (GetPlayerPos(0).z > 80000.0f)	StartChange(SCENE_SELECT, 0);
 }
@@ -70,12 +78,13 @@ void DrawSelect()
 {
 	// Zバッファ無効
 	SetZBuffer(false);
-	//DrawBg();
+	DrawBg();
 	// Zバッファ有効
 	SetZBuffer(true);
 	//DrawStreet();
 	//DrawField();
 	//DrawObject();
+	DrawTex();
 	DrawPlayer();
 	SetZWrite(false);	// 影設定変更影を綺麗に
 	DrawShadow();

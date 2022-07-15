@@ -14,6 +14,8 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include "Resource.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 // –{—ˆ‚Íƒwƒbƒ_‚É‘‚©‚È‚¢•û‚ª—Ç‚¢
 using namespace DirectX;
