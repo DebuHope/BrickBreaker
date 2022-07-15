@@ -32,6 +32,7 @@ typedef struct _tText
 	XMFLOAT3 rot;	// 回転
 	XMFLOAT3 scl;	// 拡大率
 	XMFLOAT3 vel;	// 速度
+	XMFLOAT3 last;	// 直前の座標
 	int nShadowIdx;
 	bool	KillFlag;	// キルフラグ
 	int		nState;	// 行動(0以下:未使用 1以上:通常)
@@ -125,6 +126,11 @@ void UpdateText(void)
 		{
 			angleY += 10.0f;
 		}
+
+		// 直前の位置を保存(ブロックとの判定用) 
+		g_ball[i].last.x = g_ball[i].pos.x;
+		g_ball[i].last.y = g_ball[i].pos.y;
+		g_ball[i].last.z = g_ball[i].pos.z;
 
 		//				  原点    速度       角度
 		g_ball[i].vel.x = (float)(0.0f + speed * cosf(angleX * (M_PI / 180.0f)));
@@ -343,4 +349,31 @@ float GetBallAngleX(int no)
 float GetBallAngleY(int no)
 {
 	return angleY;
+}
+
+void CheckBallHitDirection(XMFLOAT3 * BCenter, XMFLOAT3 * BSize)
+{
+	// どの方向から接触したのかチェック
+	for (int i = 0; i < MAX_TEXT; i++) {
+		// ブロックの幅の範囲にいた : yのみ反転
+		if ((BCenter->x - BSize->x / 2) < g_ball[i].last.x &&
+			(BCenter->x + BSize->x / 2) > g_ball[i].last.x) {
+			SetAngleY(180.0f);
+			//g_ball[i].vel.y = -g_ball[i].vel.y;
+		}
+		// ブロックの高さの範囲にいた : xのみ反転
+		if ((BCenter->y - BSize->y / 2) < g_ball[i].last.y &&
+			(BCenter->y + BSize->y / 2) > g_ball[i].last.y) {
+			SetAngleX(180.0f);
+			//g_ball[i].vel.x = -g_ball[i].vel.x;
+		}
+		// ブロックの奥行の範囲にいた
+		// 未定義
+
+		// それ以外に当たる(角に当たる) : xy反転
+		//SetAngleX(180.0f);
+		//SetAngleY(180.0f);
+		//g_ball[i].vel.x = -g_ball[i].vel.x;
+		//g_ball[i].vel.y = -g_ball[i].vel.y;
+	}
 }

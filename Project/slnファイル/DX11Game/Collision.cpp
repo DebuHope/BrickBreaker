@@ -76,7 +76,8 @@ void Collision()
 				&GetTextCenter(nCnt2),
 				GetTextSize(nCnt2).y))
 			{	// “–‚½‚Á‚½‚Ìˆ—
-				SetAngleX(180.0f);
+				CheckBallHitDirection(&GetBlockCenter(nCnt1), &GetBlockSize(nCnt1));
+				//SetAngleX(180.0f);
 				DestroyBlock(nCnt1);
 			}
 		}

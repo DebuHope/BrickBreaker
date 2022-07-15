@@ -34,3 +34,6 @@ void SetAngleX(float _angleX);
 void SetAngleY(float _angleY);
 float	GetBallAngleX(int no);
 float	GetBallAngleY(int no);
+
+// ボールがブロックと当たった時の挙動決定(簡易判定版)
+void CheckBallHitDirection(XMFLOAT3* BCenter, XMFLOAT3* BSize);
