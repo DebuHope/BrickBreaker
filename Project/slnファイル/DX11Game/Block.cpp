@@ -261,12 +261,3 @@ void DestroyBlock(int no)
 	ReleaseShadow(g_block[no].nShadowIdx);
 	g_block[no].pos = XMFLOAT3(0.0f, -1000.0f, 0.0f);
 }
-
-void KillBlock(int no)
-{
-	if (no < 0 || no >= MAX_BLOCK) {
-		return;
-	}
-
-	g_block[no].KillFlag = true;
-}

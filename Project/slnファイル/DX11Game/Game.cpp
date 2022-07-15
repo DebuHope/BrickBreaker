@@ -234,7 +234,7 @@ void DrawGame()
 		}
 		DrawScore();
 	}
-	DrawTransition();
+	//DrawTransition();
 	SetBlendState(BS_NONE);
 	// Zバッファ有効
 	SetZBuffer(true);

@@ -29,4 +29,8 @@ XMFLOAT3 GetTextSize(int no);
 bool IsText(int no);
 void DestroyText(int no);
 
-void KillText(int no);
+void PadlleBall(int no);
+void SetAngleX(float _angleX);
+void SetAngleY(float _angleY);
+float	GetBallAngleX(int no);
+float	GetBallAngleY(int no);

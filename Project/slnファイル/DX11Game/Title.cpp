@@ -78,7 +78,7 @@ void DrawTitle()
 	SetZBuffer(false);
 	SetBlendState(BS_ALPHABLEND);
 	DrawUI();
-	DrawTransition();
+	//DrawTransition();
 	SetBlendState(BS_NONE);
 	// Zバッファ有効
 	SetZBuffer(true);

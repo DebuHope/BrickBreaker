@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Shadow.h"
 #include "Input.h"
+#include "Collision.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -40,11 +41,11 @@ typedef struct _tText
 // グローバル変数
 //*****************************************************************************
 static CAssimpModel	g_model[MAX_TEXT_MODEL];	// モデルデータ
-static tText			g_block[MAX_TEXT];
+static tText			g_ball[MAX_TEXT];
 
 static float speed = 1.0f;
-static float angleX = 0.0f;
-static float angleY = 0.0f;
+static float angleX = 35.0f;
+static float angleY = 35.0f;
 
 HRESULT LoadText(void)
 {
@@ -66,12 +67,12 @@ void InitText(void)
 	// 位置・回転・スケールの初期設定
 	for (int i = 0; i < MAX_TEXT; i++)
 	{
-		g_block[i].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_block[i].rot = XMFLOAT3(0.0f, 180.0f, 0.0f);
-		g_block[i].scl = XMFLOAT3(3.0f, 3.0f, 3.0f);
-		g_block[i].vel = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_block[i].nState = 1;
-		g_block[i].KillFlag = false;
+		g_ball[i].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_ball[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_ball[i].scl = XMFLOAT3(3.0f, 3.0f, 3.0f);
+		g_ball[i].vel = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_ball[i].nState = 1;
+		g_ball[i].KillFlag = false;
 	}
 
 	// ワールドマトリックスの初期化
@@ -79,7 +80,7 @@ void InitText(void)
 	mtxWorld = XMMatrixIdentity();
 	for (int i = 0; i < MAX_TEXT; i++)
 	{
-		XMStoreFloat4x4(&g_block[i].mtxWorld, mtxWorld);
+		XMStoreFloat4x4(&g_ball[i].mtxWorld, mtxWorld);
 	}
 }
 
@@ -90,7 +91,7 @@ void UninitText(void)
 {
 	// 影の解放
 	for (int i = 0; i < MAX_TEXT; i++) {
-		ReleaseShadow(g_block[i].nShadowIdx);
+		ReleaseShadow(g_ball[i].nShadowIdx);
 	}
 	// モデルの解放
 	//for (int i = 0; i < MAX_TEXT_MODEL; i++) {
@@ -105,7 +106,7 @@ void UpdateText(void)
 {
 	for (int i = 0; i < MAX_TEXT; i++)
 	{
-		if (g_block[i].nState == 0)	continue;
+		if (g_ball[i].nState == 0)	continue;
 
 		if (GetKeyPress(VK_Z))
 		{
@@ -126,44 +127,47 @@ void UpdateText(void)
 		}
 
 		//				  原点    速度       角度
-		g_block[i].vel.x = (float)(0.0f + speed * cosf(angleX * (M_PI / 180.0f)));
-		g_block[i].vel.y = (float)(0.0f + speed * sinf(angleY * (M_PI / 180.0f)));
+		g_ball[i].vel.x = (float)(0.0f + speed * cosf(angleX * (M_PI / 180.0f)));
+		g_ball[i].vel.y = (float)(0.0f + speed * sinf(angleY * (M_PI / 180.0f)));
 
-		// キルフラグが立った場合
-		if (g_block[i].KillFlag == true) {
+		// ボールがパドルに当たった時
+		if (g_ball[i].KillFlag == true) {
 			angleY += 180;
-			if (g_block[i].pos.y < -75.0f)
+			if (g_ball[i].pos.y < -75.0f)
 			{
-				g_block[i].pos.y -= 2.0f;
+				g_ball[i].pos.y -= 2.0f;
 			}
-			if (g_block[i].pos.y > -75.0f)
+			if (g_ball[i].pos.y > -75.0f)
 			{
-				g_block[i].pos.y += 2.0f;
+				g_ball[i].pos.y += 2.0f;
 			}
-			g_block[i].KillFlag = false;
+			g_ball[i].KillFlag = false;
 		}
+
 
 		// 位置の更新
-		g_block[i].pos.x += g_block[i].vel.x;
-		g_block[i].pos.y += g_block[i].vel.y;
-		g_block[i].pos.z += g_block[i].vel.z;
+		g_ball[i].pos.x += g_ball[i].vel.x;
+		g_ball[i].pos.y += g_ball[i].vel.y;
+		g_ball[i].pos.z += g_ball[i].vel.z;
 
 		// 画面外判定
-		if (g_block[i].pos.x > 98.0f || g_block[i].pos.x < -98.0f)
+		if (g_ball[i].pos.x > 98.0f || g_ball[i].pos.x < -98.0f)
 		{	// 左右
 			angleX += 180.0f;
-			angleX = (int)angleX % 360;
 		}
-		else if (g_block[i].pos.y > 98.0f || g_block[i].pos.y < -98.0f)
+		else if (g_ball[i].pos.y > 98.0f || g_ball[i].pos.y < -98.0f)
 		{	// 上下
 			angleY += 180.0f;
-			angleY = (int)angleY % 360;
 		}
 
+		// angle 正規化
+		angleX = (int)angleX % 360;
+		angleY = (int)angleY % 360;
+
 		// 影を消す
-		if (g_block[i].pos.y <= 0.0f) {
-			ReleaseShadow(g_block[i].nShadowIdx);
-			g_block[i].nShadowIdx = -1;
+		if (g_ball[i].pos.y <= 0.0f) {
+			ReleaseShadow(g_ball[i].nShadowIdx);
+			g_ball[i].nShadowIdx = -1;
 		}
 
 		// ワールドマトリックスの初期化
@@ -172,33 +176,33 @@ void UpdateText(void)
 
 		// スケールを反映
 		mtxScl = XMMatrixScaling(
-			g_block[i].scl.x,
-			g_block[i].scl.y,
-			g_block[i].scl.z
+			g_ball[i].scl.x,
+			g_ball[i].scl.y,
+			g_ball[i].scl.z
 		);
 		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
 		// 回転を反映
 		mtxRot = XMMatrixRotationRollPitchYaw(
-			XMConvertToRadians(g_block[i].rot.x),
-			XMConvertToRadians(g_block[i].rot.y),
-			XMConvertToRadians(g_block[i].rot.z)
+			XMConvertToRadians(g_ball[i].rot.x),
+			XMConvertToRadians(g_ball[i].rot.y),
+			XMConvertToRadians(g_ball[i].rot.z)
 		);
 		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
 		// 移動を反映
 		mtxTranslate = XMMatrixTranslation(
-			g_block[i].pos.x,
-			g_block[i].pos.y,
-			g_block[i].pos.z
+			g_ball[i].pos.x,
+			g_ball[i].pos.y,
+			g_ball[i].pos.z
 		);
 		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
 		// ワールドマトリックス設定
-		XMStoreFloat4x4(&g_block[i].mtxWorld, mtxWorld);
+		XMStoreFloat4x4(&g_ball[i].mtxWorld, mtxWorld);
 
 		// 影の移動
-		MoveShadow(g_block[i].nShadowIdx, g_block[i].pos);
+		MoveShadow(g_ball[i].nShadowIdx, g_ball[i].pos);
 
 #ifdef _DEBUG
 
@@ -214,12 +218,12 @@ void DrawTex(void)
 {
 	for (int i = 0; i < MAX_TEXT; i++)
 	{
-		if (g_block[i].pos.z > GetPlayerPos(0).z - 5000.0f) {
+		if (g_ball[i].pos.z > GetPlayerPos(0).z - 5000.0f) {
 			ID3D11DeviceContext* pDeviceContext = GetDeviceContext();
 
 			// モデル表示
-			if (g_block[i].nState == 0)	continue;
-			g_model[g_block[i].nType].Draw(pDeviceContext, g_block[i].mtxWorld);
+			if (g_ball[i].nState == 0)	continue;
+			g_model[g_ball[i].nType].Draw(pDeviceContext, g_ball[i].mtxWorld);
 		}
 	}
 }
@@ -227,7 +231,7 @@ void DrawTex(void)
 // 設置
 int SetText(XMFLOAT3 pos, XMFLOAT3 scl, XMFLOAT3 dir, int type)
 {
-	_tText* pText = g_block;
+	_tText* pText = g_ball;
 	for (int i = 0; i < MAX_TEXT; ++i, ++pText)
 	{	// 出現している場合スルー
 		if (pText->nState != 0) continue;
@@ -247,7 +251,7 @@ int SetText(XMFLOAT3 pos, XMFLOAT3 scl, XMFLOAT3 dir, int type)
 
 XMFLOAT4X4 GetTextWorld(int no)
 {
-	return g_block[no].mtxWorld;
+	return g_ball[no].mtxWorld;
 }
 
 // 中心座標所得
@@ -257,10 +261,10 @@ XMFLOAT3 GetTextCenter(int no)
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 
-	XMFLOAT3 pos = g_model[g_block[no].nType].GetCenter();
-	pos.x += g_block[no].pos.x;
-	pos.y += g_block[no].pos.y;
-	pos.z += g_block[no].pos.z;
+	XMFLOAT3 pos = g_model[g_ball[no].nType].GetCenter();
+	pos.x += g_ball[no].pos.x;
+	pos.y += g_ball[no].pos.y;
+	pos.z += g_ball[no].pos.z;
 	return pos;
 }
 
@@ -271,7 +275,7 @@ XMFLOAT3 GetTextBBox(int no)
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 	// モデルからサイズ半分を所得
-	return g_model[g_block[no].nType].GetBBox();
+	return g_model[g_ball[no].nType].GetBBox();
 }
 
 // 座標所得
@@ -280,7 +284,7 @@ XMFLOAT3 GetTextPos(int no)
 	if (no < 0 || no >= MAX_TEXT) {
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
-	return g_block[no].pos;
+	return g_ball[no].pos;
 }
 
 // サイズ所得
@@ -289,13 +293,13 @@ XMFLOAT3 GetTextSize(int no)
 	if (no < 0 || no >= MAX_TEXT) {
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
-	return XMFLOAT3(g_block[no].scl.x, g_block[no].scl.y, g_block[no].scl.z);
+	return XMFLOAT3(g_ball[no].scl.x, g_ball[no].scl.y, g_ball[no].scl.z);
 }
 
 // 生存しているか
 bool IsText(int no)
 {
-	if (no < 0 || no >= MAX_TEXT || g_block[no].KillFlag == true) {
+	if (no < 0 || no >= MAX_TEXT || g_ball[no].KillFlag == true) {
 		return false;
 	}
 	return true;
@@ -307,16 +311,36 @@ void DestroyText(int no)
 	if (no < 0 || no >= MAX_TEXT) {
 		return;
 	}
-	g_block[no].nState = 0;
-	ReleaseShadow(g_block[no].nShadowIdx);
-	g_block[no].pos = XMFLOAT3(0.0f, -1000.0f, 0.0f);
+	g_ball[no].nState = 0;
+	ReleaseShadow(g_ball[no].nShadowIdx);
+	g_ball[no].pos = XMFLOAT3(0.0f, -1000.0f, 0.0f);
 }
 
-void KillText(int no)
+void PadlleBall(int no)
 {
 	if (no < 0 || no >= MAX_TEXT) {
 		return;
 	}
 
-	g_block[no].KillFlag = true;
+	g_ball[no].KillFlag = true;
+}
+
+void SetAngleX(float _angleX)
+{
+	angleX += _angleX;
+}
+
+void SetAngleY(float _angleY)
+{
+	angleY += _angleY;
+}
+
+float GetBallAngleX(int no)
+{
+	return angleX;
+}
+
+float GetBallAngleY(int no)
+{
+	return angleY;
 }

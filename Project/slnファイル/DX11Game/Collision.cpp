@@ -20,6 +20,7 @@
 #include "Endroll.h"
 #include "Block.h"
 
+
 #pragma region AllCollisionChecker
 // “–‚½‚è”»’è‚Ü‚Æ‚ß
 void Collision()
@@ -48,7 +49,7 @@ void Collision()
 				&GetTextCenter(nCnt2),
 				GetTextSize(nCnt2).y))
 			{	// “–‚½‚Á‚½‚Ìˆ—
-				KillText(nCnt1);
+				PadlleBall(nCnt1);
 			}
 		}
 	}
@@ -57,7 +58,7 @@ void Collision()
 	for (nCnt1 = 0; nCnt1 < MAX_BLOCK; nCnt1++) {
 		if (!IsBlock(nCnt1))	continue;
 
-		for (nCnt2 = 0; nCnt2 < MAX_PLAYER; nCnt2++) {
+		for (nCnt2 = 0; nCnt2 < MAX_TEXT; nCnt2++) {
 			if (!IsPlayer(nCnt2))	continue;
 
 			//if (CollisionBBS(
@@ -75,6 +76,7 @@ void Collision()
 				&GetTextCenter(nCnt2),
 				GetTextSize(nCnt2).y))
 			{	// “–‚½‚Á‚½‚Ìˆ—
+				SetAngleX(180.0f);
 				DestroyBlock(nCnt1);
 			}
 		}
