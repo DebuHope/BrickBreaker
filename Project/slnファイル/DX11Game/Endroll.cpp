@@ -31,11 +31,8 @@ typedef struct _tText
 	XMFLOAT3 rot;	// 回転
 	XMFLOAT3 scl;	// 拡大率
 	XMFLOAT3 vel;	// 速度
-
 	int nShadowIdx;
-
-	bool		KillFlag;	// キルフラグ
-
+	bool	KillFlag;	// キルフラグ
 	int		nState;	// 行動(0以下:未使用 1以上:通常)
 }tText;
 
@@ -45,7 +42,7 @@ typedef struct _tText
 static CAssimpModel	g_model[MAX_TEXT_MODEL];	// モデルデータ
 static tText			g_text[MAX_TEXT];
 
-float speed = 0.8f;
+float speed = 2.0f;
 float angleX = 0.0f;
 float angleY = 0.0f;
 
@@ -131,10 +128,11 @@ void UpdateText(void)
 		//				  原点    速度       角度
 		g_text[i].vel.x = 0.0f + speed * cosf(angleX * (M_PI / 180.0f));
 		g_text[i].vel.y = 0.0f + speed * sinf(angleY * (M_PI / 180.0f));
+
 		// キルフラグが立った場合
 		if (g_text[i].KillFlag == true) {
-			// 重力を座標に加算
-			g_text[i].vel.y -= 0.5f;
+			angleY += 180;
+			g_text[i].KillFlag = false;
 		}
 
 		// 位置の更新
@@ -314,13 +312,6 @@ void KillText(int no)
 {
 	if (no < 0 || no >= MAX_TEXT) {
 		return;
-	}
-
-	if (rand() % 2 == 0) {
-		g_text[no].vel = XMFLOAT3((float)((rand() % 5) + 2), (float)((rand() % 10) + 7), (float)((rand() % 5) + 6));
-	}
-	else {
-		g_text[no].vel = XMFLOAT3((float)((-rand() % 5) - 2), (float)((rand() % 10) + 7), (float)((rand() % 5) + 6));
 	}
 
 	g_text[no].KillFlag = true;

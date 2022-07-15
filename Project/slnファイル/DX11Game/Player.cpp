@@ -243,17 +243,6 @@ void UpdatePlayer(void)
 	JumpCount++;
 	StartInvincibleCount++;
 
-	// パッドZ軸フラグ
-	if (GetJoyCountSimple() == 1 && (GetJoyZ(0) < -20000)) {
-		JoyZCount++;
-	}
-	else if (GetJoyCountSimple() == 1 && (GetJoyZ(0) > 20000)) {
-		JoyZCount--;
-	}
-	else {
-		JoyZCount = 0;
-	}
-
 	if(DownFlag) InvincibleCount++;
 	if (InvincibleCount > 150) DownFlag = false;
 
@@ -309,13 +298,22 @@ XMFLOAT3 GetPlayerPos(int no)
 	return g_player[no].pos;
 }
 
+//// サイズ所得
+//XMFLOAT3 GetPlayerSize(int no)
+//{
+//	if (no < 0 || no >= MAX_PLAYER) {
+//		return XMFLOAT3(0.0f, 0.0f, 0.0f);
+//	}
+//	return g_player[no].scl;
+//}
+
 // サイズ所得
 XMFLOAT3 GetPlayerSize(int no)
 {
 	if (no < 0 || no >= MAX_PLAYER) {
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
-	return g_player[no].scl;
+	return XMFLOAT3(g_player[no].scl.x, g_player[no].scl.y, g_player[no].scl.z);
 }
 
 // 生存しているか
