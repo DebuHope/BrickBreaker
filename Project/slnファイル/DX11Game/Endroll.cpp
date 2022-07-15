@@ -356,14 +356,14 @@ void CheckBallHitDirection(XMFLOAT3 * BCenter, XMFLOAT3 * BSize)
 	// どの方向から接触したのかチェック
 	for (int i = 0; i < MAX_TEXT; i++) {
 		// ブロックの幅の範囲にいた : yのみ反転
-		if ((BCenter->x - BSize->x / 2) < g_ball[i].last.x &&
-			(BCenter->x + BSize->x / 2) > g_ball[i].last.x) {
+		if ((BCenter->x - BSize->x / 2) <= g_ball[i].last.x &&
+			(BCenter->x + BSize->x / 2) >= g_ball[i].last.x) {
 			SetAngleY(180.0f);
 			//g_ball[i].vel.y = -g_ball[i].vel.y;
 		}
 		// ブロックの高さの範囲にいた : xのみ反転
-		if ((BCenter->y - BSize->y / 2) < g_ball[i].last.y &&
-			(BCenter->y + BSize->y / 2) > g_ball[i].last.y) {
+		if ((BCenter->y - BSize->y / 2) <= g_ball[i].last.y &&
+			(BCenter->y + BSize->y / 2) >= g_ball[i].last.y) {
 			SetAngleX(180.0f);
 			//g_ball[i].vel.x = -g_ball[i].vel.x;
 		}

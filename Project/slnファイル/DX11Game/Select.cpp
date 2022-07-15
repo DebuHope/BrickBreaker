@@ -42,29 +42,68 @@ void InitSelect()
 	SetDrawTexNo(UI_MAINSELECT);
 
 	// ブロックの配置			位置							サイズ		タイプ
+	SetBlock(XMFLOAT3(-51.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-51.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-51.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-51.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-51.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-34.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-34.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-34.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-34.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-34.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-17.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-17.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-17.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-17.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-17.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(0.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(0.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(0.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(0.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(0.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
-
 	SetBlock(XMFLOAT3(17.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(17.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(17.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(17.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(17.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
-
 	SetBlock(XMFLOAT3(34.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(34.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(34.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(34.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(34.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
-
 	SetBlock(XMFLOAT3(51.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(51.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(51.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(51.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 	SetBlock(XMFLOAT3(51.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+
+	//SetBlock(XMFLOAT3(0.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(10.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-10.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(20.0f, 75.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-20.0f, 75.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(30.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-30.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(35.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-35.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(40.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-40.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(40.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-40.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(40.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-40.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(35.0f, 45.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-35.0f, 45.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(25.0f, 40.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-25.0f, 40.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(20.0f, 35.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-20.0f, 35.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(15.0f, 30.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-15.0f, 30.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(10.0f, 25.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-10.0f, 25.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(0.0f, 20.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
 }
 
 //=============================================================================
