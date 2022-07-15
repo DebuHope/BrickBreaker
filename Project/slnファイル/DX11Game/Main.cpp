@@ -19,6 +19,9 @@
 #include "Transition.h"
 #include "Sound.h"
 #include "Player.h"
+#include "D2DRenderTargetsAndDWrite.h"
+#include "D2DText.h"
+#include "D2DDrawMng.h"
 
 //-------- ライブラリのリンク
 #pragma comment(lib, "winmm")
@@ -59,8 +62,11 @@ ID3D11RasterizerState*		g_pRs[MAX_CULLMODE];	// ラスタライザ ステート
 ID3D11BlendState*			g_pBlendState[MAX_BLENDSTATE];// ブレンド ステート
 ID3D11DepthStencilState*	g_pDSS[2];				// Z/ステンシル ステート
 
-int							g_nCountFPS;			// FPSカウンタ
+D2DRenderTargetsandDWrite*	g_Targets = nullptr;	// D2DとWrite機能のファクトリとレンダーターゲット集
+D2DText*					g_D2DText = nullptr;	// Text機能のインスタンスアドレス
+D2DTextMng*					g_D2DTextMng = GetTextMng();// Text機能の描画管理インスタンスアドレス
 
+int							g_nCountFPS;			// FPSカウンタ
 ETypeScene					g_currentScene;	// 現在のシーン
 
 //=============================================================================
@@ -318,6 +324,10 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 		D3D_FEATURE_LEVEL_9_2,
 		D3D_FEATURE_LEVEL_9_1,
 	};
+	
+	//★---変更--- DirectX11上でDirect2Dを使用するために必要
+	UINT createDeviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+	//★
 
 	hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE,
 		nullptr, 0, featureLevels, _countof(featureLevels), D3D11_SDK_VERSION, &scd,
@@ -381,6 +391,11 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 
 	// 乱数初期化
 	srand((unsigned int)time(NULL));
+
+	// D2D&Write初期化
+	g_Targets = new D2DRenderTargetsandDWrite();
+	g_Targets->Init(g_pSwapChain, g_hWnd);
+	g_D2DText = new D2DText(g_Targets->GetDWriteFactory(),g_Targets->GetDxgiRenderTarget());
 
 	// シーンの初期化
 	g_currentScene = SCENE_TITLE;	// ゲーム起動時のシーンをセット
@@ -553,6 +568,10 @@ void Uninit(void)
 		SAFE_RELEASE(g_pRs[i]);
 	}
 
+	// D2D&Write解放
+	SAFE_DELETE(g_D2DText);
+	SAFE_DELETE(g_Targets);
+
 	// バックバッファ解放
 	ReleaseBackBuffer();
 
@@ -707,6 +726,9 @@ void Draw(void)
 
 	// Zバッファ無効	// 手前の2Dに描画するものはここ
 	SetZBuffer(false);
+
+	// Text描画
+	g_D2DTextMng->Render();
 
 	// デバッグ文字列表示
 	SetBlendState(BS_ALPHABLEND);
@@ -870,6 +892,11 @@ ETypeScene GetSceneNo()
 void ReleaseGame()
 {
 	PostMessage(GetMainWnd(), WM_CLOSE, 0, 0);
+}
+
+D2DText * GetD2DText()
+{
+	return g_D2DText;
 }
 
 

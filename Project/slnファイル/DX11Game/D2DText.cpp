@@ -3,6 +3,8 @@
 #include "D2DRenderTargetsAndDWrite.h"
 #include "D2DDrawMng.h"
 
+#include "Main.h"
+
 #ifndef SAFE_RELEASE
 #define SAFE_RELEASE(x) {if(x){(x)->Release();x=nullptr;}}
 #endif
@@ -245,8 +247,8 @@ std::wstring D2DText::StringToWString(std::string str)
 		, DrawFlag(true)
 	{
 		//外部インスタンスの場所が判明しているので、今回は直接取得している
-		TextComponent = getEngine()->getD2DText();
-		Manager = getEngine()->getD2DTextMng();
+		TextComponent = GetD2DText();
+		Manager = GetTextMng();
 		Manager->Add(this);
 	}
 
@@ -311,3 +313,4 @@ std::wstring D2DText::StringToWString(std::string str)
 		DrawFlag = enable;
 	}
 #pragma endregion
+

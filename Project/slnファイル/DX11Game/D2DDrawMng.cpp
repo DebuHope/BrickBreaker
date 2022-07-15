@@ -6,6 +6,11 @@
 using namespace D2DFunctions;
 
 #pragma region TextManager
+// インスタンス生成
+namespace {
+	D2DTextMng TextMng;
+}
+
 	D2DTextMng::D2DTextMng()
 	{
 		// 何もしない
@@ -140,3 +145,8 @@ using namespace D2DFunctions;
 	//	}
 	//}
 #pragma endregion FuncManager
+
+	D2DTextMng * GetTextMng()
+	{
+		return &TextMng;
+	}

@@ -124,3 +124,4 @@ void StartSceneChange(ETypeScene NextScene);	// シーン遷移開始
 ETypeScene GetSceneNo();		// 現在のシーン番号所得
 
 void ReleaseGame();
+class D2DText* GetD2DText();

@@ -6,7 +6,7 @@
 
 #include <d2d1.h>
 
-#include "RenderTargetResources.h"	// レンダーターゲットリソースをまとめてあるクラス
+//#include "RenderTargetResources.h"	// レンダーターゲットリソースをまとめてあるクラス
 
 // lib指定
 #pragma comment(lib,"d2d1.lib")
