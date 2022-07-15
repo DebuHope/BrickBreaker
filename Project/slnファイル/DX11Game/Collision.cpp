@@ -16,7 +16,9 @@
 //#include "Goal.h"
 #include "Sound.h"
 #include "Transition.h"
+
 #include "Endroll.h"
+#include "Block.h"
 
 #pragma region AllCollisionChecker
 // 当たり判定まとめ
@@ -31,13 +33,49 @@ void Collision()
 		for (nCnt2 = 0; nCnt2 < MAX_PLAYER; nCnt2++) {
 			if (!IsPlayer(nCnt2))	continue;
 
+			//if (CollisionBBS(
+			//	(&GetTextCenter(nCnt1)),
+			//	&GetTextSize(nCnt1),
+			//	&GetPlayerCenter(nCnt2),
+			//	GetPlayerSize(nCnt2).y))
+			//{	// 当たった時の処理
+			//	KillText(nCnt1);
+			//}
+
 			if (CollisionBBS(
-				(&GetTextCenter(nCnt1)),
-				&GetTextSize(nCnt1),
-				&GetPlayerCenter(nCnt2),
-				GetPlayerSize(nCnt2).y))
+				(&GetPlayerCenter(nCnt1)),
+				&GetPlayerSize(nCnt1),
+				&GetTextCenter(nCnt2),
+				GetTextSize(nCnt2).y))
 			{	// 当たった時の処理
 				KillText(nCnt1);
+			}
+		}
+	}
+
+	// ブロックとボール
+	for (nCnt1 = 0; nCnt1 < MAX_BLOCK; nCnt1++) {
+		if (!IsBlock(nCnt1))	continue;
+
+		for (nCnt2 = 0; nCnt2 < MAX_PLAYER; nCnt2++) {
+			if (!IsPlayer(nCnt2))	continue;
+
+			//if (CollisionBBS(
+			//	(&GetTextCenter(nCnt1)),
+			//	&GetTextSize(nCnt1),
+			//	&GetPlayerCenter(nCnt2),
+			//	GetPlayerSize(nCnt2).y))
+			//{	// 当たった時の処理
+			//	KillText(nCnt1);
+			//}
+
+			if (CollisionBBS(
+				(&GetBlockCenter(nCnt1)),
+				&GetBlockSize(nCnt1),
+				&GetTextCenter(nCnt2),
+				GetTextSize(nCnt2).y))
+			{	// 当たった時の処理
+				DestroyBlock(nCnt1);
 			}
 		}
 	}

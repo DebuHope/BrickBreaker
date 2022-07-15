@@ -14,6 +14,7 @@
 #include "Combo.h"
 #include "Gauge.h"
 #include "Endroll.h"
+#include "Block.h"
 
 HRESULT LoadModelTex()
 {
@@ -109,6 +110,13 @@ HRESULT LoadModelTex()
 		MessageBox(hWnd, _T("テキスト初期化エラー"), _T("初期化エラー"), MB_OK | MB_ICONSTOP);
 		return hr;
 	}
+
+	hr = LoadBlock();
+	if (FAILED(hr)) {
+		MessageBox(hWnd, _T("ブロック初期化エラー"), _T("初期化エラー"), MB_OK | MB_ICONSTOP);
+		return hr;
+	}
+
 	InitLife();
 
 	return hr;

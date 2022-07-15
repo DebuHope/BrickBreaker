@@ -4,7 +4,7 @@
 //======================================================================================
 #include "AssimpModel.h"
 #include "Debugproc.h"
-#include "Endroll.h"
+#include "Block.h"
 #include "main.h"
 #include "Player.h"
 #include "Shadow.h"
@@ -13,16 +13,16 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define CREDIT01	"data/model/text/ball_01.fbx"
+#define BLOCK01	"data/model/text/block_01.fbx"
 
-#define MAX_TEXT_MODEL		(1)
+#define MAX_BLOCK_MODEL		(1)
 
-#define TEXT_SPEED		(1.0f)
+#define BLOCK_SPEED		(1.0f)
 
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
-typedef struct _tText
+typedef struct _tBlock
 {
 	XMFLOAT4X4	mtxWorld;
 
@@ -34,26 +34,23 @@ typedef struct _tText
 	int nShadowIdx;
 	bool	KillFlag;	// キルフラグ
 	int		nState;	// 行動(0以下:未使用 1以上:通常)
-}tText;
+}tBlock;
 
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static CAssimpModel	g_model[MAX_TEXT_MODEL];	// モデルデータ
-static tText			g_block[MAX_TEXT];
+static CAssimpModel	g_model[MAX_BLOCK_MODEL];	// モデルデータ
+static tBlock			g_block[MAX_BLOCK];
 
-static float speed = 1.0f;
-static float angleX = 0.0f;
-static float angleY = 0.0f;
 
-HRESULT LoadText(void)
+HRESULT LoadBlock(void)
 {
 	HRESULT hr = S_OK;
 	ID3D11Device* pDevice = GetDevice();
 	ID3D11DeviceContext* pDeviceContext = GetDeviceContext();
 
 	// モデルデータの読み込み
-	hr = g_model[0].Load(pDevice, pDeviceContext, CREDIT01);
+	hr = g_model[0].Load(pDevice, pDeviceContext, BLOCK01);
 
 	return hr;
 }
@@ -61,23 +58,23 @@ HRESULT LoadText(void)
 //=============================================================================
 // 初期化処理
 //=============================================================================
-void InitText(void)
+void InitBlock(void)
 {
 	// 位置・回転・スケールの初期設定
-	for (int i = 0; i < MAX_TEXT; i++)
+	for (int i = 0; i < MAX_BLOCK; i++)
 	{
 		g_block[i].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_block[i].rot = XMFLOAT3(0.0f, 180.0f, 0.0f);
-		g_block[i].scl = XMFLOAT3(3.0f, 3.0f, 3.0f);
+		g_block[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 		g_block[i].vel = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_block[i].nState = 1;
+		g_block[i].nState = 0;
 		g_block[i].KillFlag = false;
 	}
 
 	// ワールドマトリックスの初期化
 	XMMATRIX mtxWorld;
 	mtxWorld = XMMatrixIdentity();
-	for (int i = 0; i < MAX_TEXT; i++)
+	for (int i = 0; i < MAX_BLOCK; i++)
 	{
 		XMStoreFloat4x4(&g_block[i].mtxWorld, mtxWorld);
 	}
@@ -86,14 +83,14 @@ void InitText(void)
 //=============================================================================
 // 終了処理
 //=============================================================================
-void UninitText(void)
+void UninitBlock(void)
 {
 	// 影の解放
-	for (int i = 0; i < MAX_TEXT; i++) {
+	for (int i = 0; i < MAX_BLOCK; i++) {
 		ReleaseShadow(g_block[i].nShadowIdx);
 	}
 	// モデルの解放
-	//for (int i = 0; i < MAX_TEXT_MODEL; i++) {
+	//for (int i = 0; i < MAX_BLOCK_MODEL; i++) {
 	//	g_model[i].Release();
 	//}
 }
@@ -101,64 +98,17 @@ void UninitText(void)
 //=============================================================================
 // 更新処理
 //=============================================================================
-void UpdateText(void)
+void UpdateBlock(void)
 {
-	for (int i = 0; i < MAX_TEXT; i++)
+	for (int i = 0; i < MAX_BLOCK; i++)
 	{
 		if (g_block[i].nState == 0)	continue;
-
-		if (GetKeyPress(VK_Z))
-		{
-			angleX -= 10.0f;
-		}
-		else if (GetKeyPress(VK_X))
-		{
-			angleX += 10.0f;
-		}
-
-		if (GetKeyPress(VK_C))
-		{
-			angleY -= 10.0f;
-		}
-		else if (GetKeyPress(VK_V))
-		{
-			angleY += 10.0f;
-		}
-
-		//				  原点    速度       角度
-		g_block[i].vel.x = (float)(0.0f + speed * cosf(angleX * (M_PI / 180.0f)));
-		g_block[i].vel.y = (float)(0.0f + speed * sinf(angleY * (M_PI / 180.0f)));
-
-		// キルフラグが立った場合
-		if (g_block[i].KillFlag == true) {
-			angleY += 180;
-			if (g_block[i].pos.y < -75.0f)
-			{
-				g_block[i].pos.y -= 2.0f;
-			}
-			if (g_block[i].pos.y > -75.0f)
-			{
-				g_block[i].pos.y += 2.0f;
-			}
-			g_block[i].KillFlag = false;
-		}
 
 		// 位置の更新
 		g_block[i].pos.x += g_block[i].vel.x;
 		g_block[i].pos.y += g_block[i].vel.y;
 		g_block[i].pos.z += g_block[i].vel.z;
 
-		// 画面外判定
-		if (g_block[i].pos.x > 98.0f || g_block[i].pos.x < -98.0f)
-		{	// 左右
-			angleX += 180.0f;
-			angleX = (int)angleX % 360;
-		}
-		else if (g_block[i].pos.y > 98.0f || g_block[i].pos.y < -98.0f)
-		{	// 上下
-			angleY += 180.0f;
-			angleY = (int)angleY % 360;
-		}
 
 		// 影を消す
 		if (g_block[i].pos.y <= 0.0f) {
@@ -202,7 +152,7 @@ void UpdateText(void)
 
 #ifdef _DEBUG
 
-		PrintDebugProc("BallAngle X : %0.1f Y : %0.1f\n\n\n", angleX, angleY);
+		/*PrintDebugProc("BallAngle X : %0.1f Y : %0.1f\n\n\n", angleX, angleY);*/
 #endif // _DEBUG
 	}
 }
@@ -210,9 +160,9 @@ void UpdateText(void)
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawTex(void)
+void DrawBlock(void)
 {
-	for (int i = 0; i < MAX_TEXT; i++)
+	for (int i = 0; i < MAX_BLOCK; i++)
 	{
 		if (g_block[i].pos.z > GetPlayerPos(0).z - 5000.0f) {
 			ID3D11DeviceContext* pDeviceContext = GetDeviceContext();
@@ -225,35 +175,35 @@ void DrawTex(void)
 }
 
 // 設置
-int SetText(XMFLOAT3 pos, XMFLOAT3 scl, XMFLOAT3 dir, int type)
+int SetBlock(XMFLOAT3 pos, XMFLOAT3 scl, int type)
 {
-	_tText* pText = g_block;
-	for (int i = 0; i < MAX_TEXT; ++i, ++pText)
+	_tBlock* pBlock = g_block;
+	for (int i = 0; i < MAX_BLOCK; ++i, ++pBlock)
 	{	// 出現している場合スルー
-		if (pText->nState != 0) continue;
+		if (pBlock->nState != 0) continue;
 
-		pText->pos = pos;
-		pText->scl = scl;
-		pText->nState = 1;	// 出現
-		pText->nType = type;
+		pBlock->pos = pos;
+		pBlock->scl = scl;
+		pBlock->nState = 1;	// 出現
+		pBlock->nType = type;
 
 		// 影の作成
-		pText->nShadowIdx = CreateShadow(pText->pos, 20.0f);
+		pBlock->nShadowIdx = CreateShadow(pBlock->pos, 20.0f);
 
 		return i;	// 番号を返す
 	}
 	return -1;	// 見つからなかった
 }
 
-XMFLOAT4X4 GetTextWorld(int no)
+XMFLOAT4X4 GetBlockWorld(int no)
 {
 	return g_block[no].mtxWorld;
 }
 
 // 中心座標所得
-XMFLOAT3 GetTextCenter(int no)
+XMFLOAT3 GetBlockCenter(int no)
 {
-	if (no < 0 || no >= MAX_TEXT) {
+	if (no < 0 || no >= MAX_BLOCK) {
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 
@@ -265,9 +215,9 @@ XMFLOAT3 GetTextCenter(int no)
 }
 
 // モデルサイズ所得
-XMFLOAT3 GetTextBBox(int no)
+XMFLOAT3 GetBlockBBox(int no)
 {
-	if (no < 0 || no >= MAX_TEXT) {
+	if (no < 0 || no >= MAX_BLOCK) {
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 	// モデルからサイズ半分を所得
@@ -275,36 +225,36 @@ XMFLOAT3 GetTextBBox(int no)
 }
 
 // 座標所得
-XMFLOAT3 GetTextPos(int no)
+XMFLOAT3 GetBlockPos(int no)
 {
-	if (no < 0 || no >= MAX_TEXT) {
+	if (no < 0 || no >= MAX_BLOCK) {
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 	return g_block[no].pos;
 }
 
 // サイズ所得
-XMFLOAT3 GetTextSize(int no)
+XMFLOAT3 GetBlockSize(int no)
 {
-	if (no < 0 || no >= MAX_TEXT) {
+	if (no < 0 || no >= MAX_BLOCK) {
 		return XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 	return XMFLOAT3(g_block[no].scl.x, g_block[no].scl.y, g_block[no].scl.z);
 }
 
 // 生存しているか
-bool IsText(int no)
+bool IsBlock(int no)
 {
-	if (no < 0 || no >= MAX_TEXT || g_block[no].KillFlag == true) {
+	if (no < 0 || no >= MAX_BLOCK || g_block[no].KillFlag == true) {
 		return false;
 	}
 	return true;
 }
 
 // 表示しない
-void DestroyText(int no)
+void DestroyBlock(int no)
 {
-	if (no < 0 || no >= MAX_TEXT) {
+	if (no < 0 || no >= MAX_BLOCK) {
 		return;
 	}
 	g_block[no].nState = 0;
@@ -312,9 +262,9 @@ void DestroyText(int no)
 	g_block[no].pos = XMFLOAT3(0.0f, -1000.0f, 0.0f);
 }
 
-void KillText(int no)
+void KillBlock(int no)
 {
-	if (no < 0 || no >= MAX_TEXT) {
+	if (no < 0 || no >= MAX_BLOCK) {
 		return;
 	}
 

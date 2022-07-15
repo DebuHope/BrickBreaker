@@ -129,6 +129,9 @@
     <ClCompile Include="Load.cpp">
       <Filter>ソース ファイル\Common.cpp</Filter>
     </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>ソース ファイル\Object.cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssimpModel.h">
@@ -241,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="Load.h">
       <Filter>ヘッダー ファイル\Common.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>ヘッダー ファイル\Object.h</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
