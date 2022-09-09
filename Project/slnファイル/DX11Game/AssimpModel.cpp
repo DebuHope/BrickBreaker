@@ -709,15 +709,13 @@ void CAssimpModel::SetAnimTime(double dTime)
 // 描画
 void CAssimpModel::Draw(ID3D11DeviceContext* pDC, XMFLOAT4X4& mtxWorld, EByOpacity byOpacity)
 {
-	if (GetState() == 0) {
-		if (!m_pScene) return;
-		// アニメーション更新
-		if (m_pAnimator) {
-			m_dCurrent += clock() / double(CLOCKS_PER_SEC) - m_dLastPlaying;
-			double time = m_dCurrent;
-			m_pAnimator->Calculate(time);
-			m_dLastPlaying = m_dCurrent;
-		}
+	if (!m_pScene) return;
+	// アニメーション更新
+	if (m_pAnimator) {
+		m_dCurrent += clock() / double(CLOCKS_PER_SEC) - m_dLastPlaying;
+		double time = m_dCurrent;
+		m_pAnimator->Calculate(time);
+		m_dLastPlaying = m_dCurrent;
 	}
 	m_mtxWorld = mtxWorld;
 	// 使用するシェーダーの登録	

@@ -27,4 +27,5 @@ XMFLOAT3 GetBlockBBox(int no);
 XMFLOAT3 GetBlockPos(int no);
 XMFLOAT3 GetBlockSize(int no);
 bool IsBlock(int no);
+bool IsBlock();
 void DestroyBlock(int no);

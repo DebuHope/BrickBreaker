@@ -7,17 +7,15 @@
 #include "Block.h"
 #include "main.h"
 #include "Player.h"
-#include "Shadow.h"
 #include "Input.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 #define BLOCK01	"data/model/text/block_01.fbx"
+#define BLOCK02	"data/model/text/block_02.fbx"
 
-#define MAX_BLOCK_MODEL		(1)
-
-#define BLOCK_SPEED		(1.0f)
+#define MAX_BLOCK_MODEL		(4)
 
 //*****************************************************************************
 // 構造体定義
@@ -31,9 +29,7 @@ typedef struct _tBlock
 	XMFLOAT3 rot;	// 回転
 	XMFLOAT3 scl;	// 拡大率
 	XMFLOAT3 vel;	// 速度
-	int nShadowIdx;
-	bool	KillFlag;	// キルフラグ
-	int		nState;	// 行動(0以下:未使用 1以上:通常)
+	bool	nState;	// 行動(0以下:未使用 1以上:通常)
 }tBlock;
 
 //*****************************************************************************
@@ -51,6 +47,7 @@ HRESULT LoadBlock(void)
 
 	// モデルデータの読み込み
 	hr = g_model[0].Load(pDevice, pDeviceContext, BLOCK01);
+	hr = g_model[1].Load(pDevice, pDeviceContext, BLOCK02);
 
 	return hr;
 }
@@ -64,11 +61,10 @@ void InitBlock(void)
 	for (int i = 0; i < MAX_BLOCK; i++)
 	{
 		g_block[i].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_block[i].rot = XMFLOAT3(0.0f, 180.0f, 0.0f);
+		g_block[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_block[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 		g_block[i].vel = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_block[i].nState = 0;
-		g_block[i].KillFlag = false;
 	}
 
 	// ワールドマトリックスの初期化
@@ -85,10 +81,6 @@ void InitBlock(void)
 //=============================================================================
 void UninitBlock(void)
 {
-	// 影の解放
-	for (int i = 0; i < MAX_BLOCK; i++) {
-		ReleaseShadow(g_block[i].nShadowIdx);
-	}
 	// モデルの解放
 	//for (int i = 0; i < MAX_BLOCK_MODEL; i++) {
 	//	g_model[i].Release();
@@ -109,12 +101,6 @@ void UpdateBlock(void)
 		g_block[i].pos.y += g_block[i].vel.y;
 		g_block[i].pos.z += g_block[i].vel.z;
 
-
-		// 影を消す
-		if (g_block[i].pos.y <= 0.0f) {
-			ReleaseShadow(g_block[i].nShadowIdx);
-			g_block[i].nShadowIdx = -1;
-		}
 
 		// ワールドマトリックスの初期化
 		XMMATRIX mtxWorld, mtxRot, mtxScl, mtxTranslate;
@@ -147,9 +133,6 @@ void UpdateBlock(void)
 		// ワールドマトリックス設定
 		XMStoreFloat4x4(&g_block[i].mtxWorld, mtxWorld);
 
-		// 影の移動
-		MoveShadow(g_block[i].nShadowIdx, g_block[i].pos);
-
 #ifdef _DEBUG
 
 		/*PrintDebugProc("BallAngle X : %0.1f Y : %0.1f\n\n\n", angleX, angleY);*/
@@ -164,13 +147,12 @@ void DrawBlock(void)
 {
 	for (int i = 0; i < MAX_BLOCK; i++)
 	{
-		if (g_block[i].pos.z > GetPlayerPos(0).z - 5000.0f) {
-			ID3D11DeviceContext* pDeviceContext = GetDeviceContext();
+		ID3D11DeviceContext* pDeviceContext = GetDeviceContext();
 
-			// モデル表示
-			if (g_block[i].nState == 0)	continue;
-			g_model[g_block[i].nType].Draw(pDeviceContext, g_block[i].mtxWorld);
-		}
+		// モデル表示
+		if (g_block[i].nState == 0)	continue;
+
+		g_model[g_block[i].nType].Draw(pDeviceContext, g_block[i].mtxWorld);
 	}
 }
 
@@ -186,9 +168,6 @@ int SetBlock(XMFLOAT3 pos, XMFLOAT3 scl, int type)
 		pBlock->scl = scl;
 		pBlock->nState = 1;	// 出現
 		pBlock->nType = type;
-
-		// 影の作成
-		pBlock->nShadowIdx = CreateShadow(pBlock->pos, 20.0f);
 
 		return i;	// 番号を返す
 	}
@@ -242,22 +221,33 @@ XMFLOAT3 GetBlockSize(int no)
 	return XMFLOAT3(g_block[no].scl.x, g_block[no].scl.y, g_block[no].scl.z);
 }
 
-// 生存しているか
+
+//当たり判定用　生存しているか
 bool IsBlock(int no)
 {
-	if (no < 0 || no >= MAX_BLOCK || g_block[no].KillFlag == true) {
-		return false;
-	}
 	return true;
+}
+
+// 生存しているか
+bool IsBlock()
+{
+	bool is = false;
+
+	for (int i = 0; i < MAX_BLOCK; i++)
+	{
+		if (g_block[i].nType == 0) is |= (g_block[i].nState == 1);
+
+	}
+
+	return is;
 }
 
 // 表示しない
 void DestroyBlock(int no)
 {
-	if (no < 0 || no >= MAX_BLOCK) {
+	if (no < 0 || no >= MAX_BLOCK || g_block[no].nType != 0) {
 		return;
 	}
 	g_block[no].nState = 0;
-	ReleaseShadow(g_block[no].nShadowIdx);
-	g_block[no].pos = XMFLOAT3(0.0f, -1000.0f, 0.0f);
+	g_block[no].pos = XMFLOAT3(0.0f, -1000.0f, 100.0f);
 }

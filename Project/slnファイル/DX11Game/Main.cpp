@@ -10,7 +10,6 @@
 #include "Mesh.h"
 #include "Input.h"
 #include "Collision.h"
-#include "Shadow.h"
 #include "Title.h"
 #include "Select.h"
 #include "Game.h"
@@ -405,9 +404,6 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 	hr = InitMesh();
 	if (FAILED(hr))	return hr;
 
-	// 影処理初期化
-	InitShadow();
-
 	// 数字初期化
 	hr = InitNumber();
 	if (FAILED(hr))	return hr;
@@ -438,19 +434,7 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 	//case SCENE_STAGE_SELECT:
 	//	InitStageSelect();
 	//	break;
-	case SCENE_STAGE1_1:
-	case SCENE_STAGE1_2:
-	case SCENE_STAGE1_3:
-	case SCENE_STAGE1_4:
-	case SCENE_STAGE2_1:
-	case SCENE_STAGE2_2:
-	case SCENE_STAGE2_3:
-	case SCENE_STAGE2_4:
-	case SCENE_STAGE3_1:
-	case SCENE_STAGE3_2:
-	case SCENE_STAGE3_3:
-	case SCENE_STAGE3_4:
-	case SCENE_ENDING:
+	case SCENE_STAGE_01:
 		InitGame();
 		break;
 	default:
@@ -458,7 +442,7 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 	}
 
 	//PlaySound(SOUND_LABEL_BGM01);
-	StartSceneChange(SCENE_SELECT);	// ゲーム起動時：タイトル画面
+	StartChange(SCENE_STAGE_01,0);	// ゲーム起動時：セレクト画面
 
 	return hr;
 }
@@ -492,27 +476,13 @@ void Uninit(void)
 	//case SCENE_STAGE_SELECT:
 	//	UninitStageSelect();
 	//	break;
-	case SCENE_STAGE1_1:
-	case SCENE_STAGE1_2:
-	case SCENE_STAGE1_3:
-	case SCENE_STAGE1_4:
-	case SCENE_STAGE2_1:
-	case SCENE_STAGE2_2:
-	case SCENE_STAGE2_3:
-	case SCENE_STAGE2_4:
-	case SCENE_STAGE3_1:
-	case SCENE_STAGE3_2:
-	case SCENE_STAGE3_3:
-	case SCENE_STAGE3_4:
-	case SCENE_ENDING:
+	case SCENE_STAGE_01:
 		UninitGame();
 		break;
 	default:
 		break;
 	}
 
-	// 影
-	UninitShadow();
 
 	// 数字
 	UninitNumber();
@@ -604,19 +574,7 @@ void Update(void)
 	//case SCENE_STAGE_SELECT:
 	//	UpdateStageSelect();
 	//	break;
-	case SCENE_STAGE1_1:
-	case SCENE_STAGE1_2:
-	case SCENE_STAGE1_3:
-	case SCENE_STAGE1_4:
-	case SCENE_STAGE2_1:
-	case SCENE_STAGE2_2:
-	case SCENE_STAGE2_3:
-	case SCENE_STAGE2_4:
-	case SCENE_STAGE3_1:
-	case SCENE_STAGE3_2:
-	case SCENE_STAGE3_3:
-	case SCENE_STAGE3_4:
-	case SCENE_ENDING:
+	case SCENE_STAGE_01:
 		UpdateGame();
 		break;
 	default:
@@ -631,18 +589,15 @@ void Update(void)
 	// ライト更新
 	GetLight()->Update();
 
-	// 影更新（別のヘッダに移す）
-	UpdateShadow();
-
 	// トランジション
 	UpdateTransition();
 
 	// 当たり判定
 	Collision();
 
-	if (GetKeyTrigger(VK_F1))StartChange(SCENE_TITLE,0);
-	if (GetKeyTrigger(VK_F2))StartChange(SCENE_SELECT,0);
-	if (GetKeyTrigger(VK_F3))StartChange(SCENE_STAGE1_1,3);
+	if (GetKeyTrigger(VK_F1))StartSceneChange(SCENE_TITLE);
+	if (GetKeyTrigger(VK_F2))StartSceneChange(SCENE_SELECT);
+	if (GetKeyTrigger(VK_F3))StartSceneChange(SCENE_STAGE_01);
 }
 
 //=============================================================================
@@ -677,19 +632,7 @@ void Draw(void)
 	//case SCENE_STAGE_SELECT:
 	//	DrawStageSelect();
 	//	break;
-	case SCENE_STAGE1_1:
-	case SCENE_STAGE1_2:
-	case SCENE_STAGE1_3:
-	case SCENE_STAGE1_4:
-	case SCENE_STAGE2_1:
-	case SCENE_STAGE2_2:
-	case SCENE_STAGE2_3:
-	case SCENE_STAGE2_4:
-	case SCENE_STAGE3_1:
-	case SCENE_STAGE3_2:
-	case SCENE_STAGE3_3:
-	case SCENE_STAGE3_4:
-	case SCENE_ENDING:
+	case SCENE_STAGE_01:
 		DrawGame();
 		break;
 	default:
@@ -704,6 +647,7 @@ void Draw(void)
 	// デバッグ文字列表示
 	SetBlendState(BS_ALPHABLEND);
 	// トランジション
+	DrawTransition();
 	SetPolygonColor(0.0f, 2.0f, 0.0f);
 	DrawDebugProc();
 	SetBlendState(BS_NONE);
@@ -800,19 +744,7 @@ void StartSceneChange(ETypeScene NextScene)
 	//case SCENE_STAGE_SELECT:
 	//	UninitStageSelect();
 	//	break;
-	case SCENE_STAGE1_1:
-	case SCENE_STAGE1_2:
-	case SCENE_STAGE1_3:
-	case SCENE_STAGE1_4:
-	case SCENE_STAGE2_1:
-	case SCENE_STAGE2_2:
-	case SCENE_STAGE2_3:
-	case SCENE_STAGE2_4:
-	case SCENE_STAGE3_1:
-	case SCENE_STAGE3_2:
-	case SCENE_STAGE3_3:
-	case SCENE_STAGE3_4:
-	case SCENE_ENDING:
+	case SCENE_STAGE_01:
 		UninitGame();
 		break;
 	default:
@@ -832,19 +764,7 @@ void StartSceneChange(ETypeScene NextScene)
 	//case SCENE_STAGE_SELECT:
 	//	InitStageSelect();
 	//	break;
-	case SCENE_STAGE1_1:
-	case SCENE_STAGE1_2:
-	case SCENE_STAGE1_3:
-	case SCENE_STAGE1_4:
-	case SCENE_STAGE2_1:
-	case SCENE_STAGE2_2:
-	case SCENE_STAGE2_3:
-	case SCENE_STAGE2_4:
-	case SCENE_STAGE3_1:
-	case SCENE_STAGE3_2:
-	case SCENE_STAGE3_3:
-	case SCENE_STAGE3_4:
-	case SCENE_ENDING:
+	case SCENE_STAGE_01:
 		InitGame();
 		break;
 	default:

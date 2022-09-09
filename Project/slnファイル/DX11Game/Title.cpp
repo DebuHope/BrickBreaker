@@ -7,10 +7,12 @@
 #include "Title.h"
 #include "Input.h"
 #include "Bg.h"
-#include "UI.h"
 #include "Player.h"
 #include "Transition.h"
-#include "Shadow.h"
+
+#include "Polygon.h"
+#include "Texture.h"
+
 
 //=============================================================================
 // 初期化処理
@@ -19,10 +21,8 @@ void InitTitle()
 {
 	InitPlayer();
 	InitBg();
-	InitUI();
-	//InitTransition();
+	InitTransition();
 
-	SetDrawTexNo(UI_TITLE_PRINT);
 }
 
 //=============================================================================
@@ -32,7 +32,6 @@ void UninitTitle()
 {
 	UninitPlayer();
 	UninitBg();
-	UninitUI();
 }
 
 //=============================================================================
@@ -42,7 +41,6 @@ void UpdateTitle()
 {
 	UpdatePlayer();
 	UpdateBg();
-	UpdateUI();
 	// キー	１～２５６　　　　　パッド　０～３１
 	for (int i = 1; i < 256; i++) {		
 		if (GetKeyRelease(i)) {
@@ -73,12 +71,10 @@ void DrawTitle()
 	//DrawShadow();
 	//SetZWrite(true);
 
-	DrawPlayer();
 	// Zバッファ無効
 	SetZBuffer(false);
 	SetBlendState(BS_ALPHABLEND);
-	DrawUI();
-	//DrawTransition();
+	DrawTransition();
 	SetBlendState(BS_NONE);
 	// Zバッファ有効
 	SetZBuffer(true);

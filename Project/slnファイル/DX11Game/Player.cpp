@@ -7,11 +7,9 @@
 #include "AssimpModel.h"
 #include "Debugproc.h"
 #include "Player.h"
-#include "Shadow.h"
 #include "main.h"
 #include "Camera.h"
 #include "input.h"
-#include "UI.h"
 #include "Transition.h"
 #include "Life.h"
 #include "Sound.h"
@@ -56,15 +54,6 @@ typedef struct _tPlayer
 //*****************************************************************************
 static CAssimpModel	g_model[MAX_PLAYER_MODEL];	// モデルデータ
 static tPlayer		g_player[MAX_PLAYER];	// プレイヤー数
-static int AnimCount;
-static int DashCount;
-static int SlideCount;
-static int JumpCount;
-static int JoyZCount;
-static int InvincibleCount;
-static int StartInvincibleCount;
-static bool DownFlag;
-static bool JoyTriggerFalg;
 
 HRESULT LoadPlayer(void)
 {
@@ -95,19 +84,7 @@ void InitPlayer(void)
 		g_player[i].nPhase = 0;
 		g_player[i].nState = 1;	// プレイヤー初期は生存
 		g_player[i].angle = 0.0f;
-
-
-		if(GetSceneNo() == SCENE_ENDING)	g_player[i].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
-	AnimCount = 0;
-	DashCount = 120;
-	SlideCount = 40;
-	JumpCount = 40;
-	JoyZCount = 0;
-	InvincibleCount = 0;
-	StartInvincibleCount = 0;
-	DownFlag = false;
-	JoyTriggerFalg = false;
 
 	// ワールドマトリックスの初期化
 	XMMATRIX mtxWorld;
@@ -116,11 +93,6 @@ void InitPlayer(void)
 	{
 		XMStoreFloat4x4(&g_player[i].mtxWorld, mtxWorld);
 	}
-
-	//// 影の作成
-	//for (int i = 0; i < MAX_PLAYER; i++) {
-	//	g_player[i].nShadowIdx = CreateShadow(g_player[i].pos, 20.0f);
-	//}
 }
 
 
@@ -129,10 +101,6 @@ void InitPlayer(void)
 //=============================================================================
 void UninitPlayer(void)
 {
-	// 影の解放
-	for (int i = 0; i < MAX_PLAYER; i++) {
-		ReleaseShadow(g_player[i].nShadowIdx);
-	}
 	// モデルの解放
 	//for (int i = 0; i < MAX_PLAYER_MODEL; i++) {
 	//	g_model[i].Release();
@@ -191,13 +159,13 @@ void UpdatePlayer(void)
 		g_player[i].vel.z = 0.0f;
 
 		// 画面外判定
-		if (g_player[i].pos.x > 98.0f)
+		if (g_player[i].pos.x > 110.0f)
 		{
-			g_player[i].pos.x = 98.0f;
+			g_player[i].pos.x = 110.0f;
 		}
-		else if (g_player[i].pos.x < -98.0f)
+		else if (g_player[i].pos.x < -110.0f)
 		{
-			g_player[i].pos.x = -98.0f;
+			g_player[i].pos.x = -110.0f;
 		}
 
 		//================================================================
@@ -232,19 +200,7 @@ void UpdatePlayer(void)
 
 		// ワールドマトリックス設定
 		XMStoreFloat4x4(&g_player[i].mtxWorld, mtxWorld);
-
-		// 影の移動
-		MoveShadow(g_player[i].nShadowIdx, g_player[i].pos);
 	}
-
-	AnimCount++;
-	DashCount++;
-	SlideCount++;
-	JumpCount++;
-	StartInvincibleCount++;
-
-	if(DownFlag) InvincibleCount++;
-	if (InvincibleCount > 150) DownFlag = false;
 
 #ifdef _DEBUG
 	PrintDebugProc("PlayerPos X : %0.1f Y : %0.1f\n\n", GetPlayerPos(0).x, GetPlayerPos(0).y);
@@ -332,7 +288,6 @@ void DestroyPlayer(int no)
 		return;
 	}
 	g_player[no].nState = 0;
-	ReleaseShadow(g_player[no].nShadowIdx);
 	g_player[no].nShadowIdx = -1;
 }
 

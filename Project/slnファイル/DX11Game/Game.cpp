@@ -1,251 +1,320 @@
 //=============================================================================
-// メインゲーム処理
+// メインメニュー処理
 // 制作：向出創
 //=============================================================================
-#include <time.h>
+
 #include "Main.h"
-#include "Game.h"
+#include "Select.h"
 #include "Input.h"
 #include "Bg.h"
-#include "Street.h"
-#include "Field.h"
 #include "Player.h"
-#include "Object.h"
-#include "DEnemy.h"
 #include "EF_Acceleration.h"
 #include "Transition.h"
-#include "Shadow.h"
-#include "Life.h"
-#include "UI.h"
 #include "Score.h"
-#include "Item.h"
-#include "Stage.h"
-#include "EF_Maneger.h"
-#include "Sound.h"
-#include "Combo.h"
-#include "Gauge.h"
 #include "Endroll.h"
+#include "Block.h"
+#include "Polygon.h"
 
-//*****************************************************************************
-// グローバル変数
-//*****************************************************************************
-static int	state;	// tips情報
-static bool	stateFlag;
+// メインフレームenum
+enum GAME_STATE
+{
+	game_start,
+	game_main,
+	game_deth,
+	game_claer,
+	game_max
+
+};
+
+//グローバル変数
+static GAME_STATE state;
+static int count;
+static XMFLOAT2 PolyPos;
+static ID3D11DeviceContext* DeviceContext;
+
 
 //=============================================================================
 // 初期化処理
 //=============================================================================
-void InitGame()
+void InitSelect()
 {
-	// 加速エフェクト
-	InitAcceleration();
-	// Effekseerエフェクト初期化
-	InitEFManeger();
-	// 背景
 	InitBg();
-	// ライフ
-	InitLife();
-	// 道路
-	InitStreet();
-	// フィールド
-	InitField();
-	// プレイヤー
 	InitPlayer();
-	// 地上敵
-	InitDEnemy();
-	// 空中敵
-	// オブジェクト
-	InitObject();
-	// エンドロール
+	InitScore(0);
+
 	InitText();
-	// スコア
-	InitScore();
-	// アイテム
-	InitItem();
-	// UI
-	InitUI();
-	// コンボ
-	InitCombo();
-	AddCountCombo(-999);
+	InitBlock();
 
-	state = 0;
-	stateFlag = false;
 
-	SetDrawTexNo(UI_UE_UI);
+	// ブロックの配置			位置							サイズ		タイプ
 
-	SetStage();
+	//ステージ２
+	SetBlock(XMFLOAT3(82.5f, 44.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(99.0f, 44.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(115.5f, 44.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-82.5f, 44.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-99.0f, 44.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-115.5f, 44.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+
+	SetBlock(XMFLOAT3(99.0f, 38.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(82.5f, 38.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(66.0f, 38.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-99.0f, 38.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-82.5f, 38.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-66.0f, 38.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+
+	SetBlock(XMFLOAT3(99.0f, 33.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(82.5f, 33.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(66.0f, 33.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(49.5f, 33.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-99.0f, 33.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-82.5f, 33.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-66.0f, 33.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-49.5f, 33.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+
+	SetBlock(XMFLOAT3(99.0f, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(82.5f, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(66.0f, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(49.5, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(33.0f, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(16.5f, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(0.0f, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-99.0f, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-82.5f, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-66.0f, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-49.5, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-33.0f, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-16.5f, 27.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+
+	SetBlock(XMFLOAT3(99.0f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(82.5f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(66.0f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(49.5f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(33.0f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(16.5f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(0.0f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-99.0f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-82.5f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-66.0f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-49.5, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-33.0f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+	SetBlock(XMFLOAT3(-16.5f, 22.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 0);
+
+	SetBlock(XMFLOAT3(99.0f, 16.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 1);
+	SetBlock(XMFLOAT3(82.5f, 16.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 1);
+	SetBlock(XMFLOAT3(66.0f, 16.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 1);
+	SetBlock(XMFLOAT3(49.5f, 16.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 1);
+	SetBlock(XMFLOAT3(33.0f, 16.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 1);
+	SetBlock(XMFLOAT3(-99.0f, 16.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 1);
+	SetBlock(XMFLOAT3(-82.5f, 16.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 1);
+	SetBlock(XMFLOAT3(-66.0f, 16.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 1);
+	SetBlock(XMFLOAT3(-49.5f, 16.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 1);
+	SetBlock(XMFLOAT3(-33.0f, 16.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 1);
+
+	//SetBlock(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f),  0);
+	//SetBlock(XMFLOAT3(0.0f, 5.5f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f),  0);
+	//SetBlock(XMFLOAT3(16.5f, 0.0f, 0.0f), XMFLOAT3(8.0f, 2.5f, 1.0f), 1);
+
+	//SetBlock(XMFLOAT3(-51.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-51.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-34.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-34.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-34.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-34.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-34.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-17.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-17.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-17.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-17.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-17.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(0.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(0.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(0.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(0.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(0.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(17.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(17.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(17.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(17.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(17.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(34.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(34.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(34.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(34.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(34.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(51.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(51.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(51.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(51.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(51.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+
+	//SetBlock(XMFLOAT3(0.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(10.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-10.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(20.0f, 75.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-20.0f, 75.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(30.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-30.0f, 70.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(35.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-35.0f, 65.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(40.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-40.0f, 60.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(40.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-40.0f, 55.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(40.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-40.0f, 50.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(35.0f, 45.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-35.0f, 45.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(25.0f, 40.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-25.0f, 40.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(20.0f, 35.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-20.0f, 35.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(15.0f, 30.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-15.0f, 30.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(10.0f, 25.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(-10.0f, 25.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+	//SetBlock(XMFLOAT3(0.0f, 20.0f, 0.0f), XMFLOAT3(8.0f, 2.0f, 1.0f), 0);
+
+	state = GAME_STATE::game_start;
+	count = 0;
+	PolyPos = XMFLOAT2(0, 0);
+	DeviceContext = GetDeviceContext();
+
 }
 
 //=============================================================================
 // 終了処理
 //=============================================================================
-void UninitGame()
+void UninitSelect()
 {
-	// 加速エフェクト
-	UninitAcceleration();
-	// 背景
 	UninitBg();
-	// ライフ
-	UninitLife();
-	// 道路
-	UninitStreet();
-	// フィールド
-	UninitField();
-	// プレイヤー
 	UninitPlayer();
-	// オブジェクト
-	UninitObject();
-	// エンドロール
+
 	UninitText();
-	// スコア
-	UninitScore();
-	// アイテム
-	UninitItem();
-	// UI
-	UninitUI();
-	// コンボ
-	UninitCombo();
+	UninitBlock();
 }
 
 //=============================================================================
 // 更新処理
 //=============================================================================
-void UpdateGame()
+void UpdateSelect()
 {
-	if (state == 0) {
-		// 加速エフェクト
-		UpdateAcceleration();
-		// Effekseerエフェクト
-		UpdateEFManeger();
-		// 背景
+	switch (state)
+	{
+	case game_start:
+
+		if (count > 30)
+		{
+			state = game_main;
+			count = 0;
+
+		}
+		else count++;
+
+		break;
+	case game_main:
+
 		UpdateBg();
-		// ライフ
-		UpdateLife();
-		// 道路
-		UpdateStreet();
-		// フィールド
-		UpdateField();
-		// プレイヤー
 		UpdatePlayer();
-		// エネミー
-		UpdateDEnemy();
-		// オブジェクト
-		UpdateObject();
-		// エンドロール
-		UpdateText();
-		// スコア
 		UpdateScore();
-		// アイテム
-		UpdateItem();
-		// コンボ
-		UpdateCombo();
-	}
-	// UI
-	UpdateUI();
+		UpdateBlock();
 
+		UpdateText();
 
-	// ポーズ切り替え
-	if (GetKeyTrigger(VK_ESCAPE) || GetJoyCountSimple() == 1 && GetJoyTrigger(0, JOYBUTTON8)){
-		if (state == 0) state = 1;
-		StopSound(SOUND_LABEL_SE_RUN);
-	}
+		//プレイヤーが死んだとき
+		if (
+			IsText(0))
+		{
+			if (count > 30)
+			{
+				state = game_deth;
+				count = 0;
 
-	// tips表示
-	if (GetSceneNo() == SCENE_STAGE1_1 && GetPlayerPos(0).z >= 800.0f && GetPlayerPos(0).z <= 850.0f && stateFlag == false) {
-		if (state == 0) state = 2;
-		stateFlag = true;
-		StopSound(SOUND_LABEL_SE_RUN);
-	}
-	else if (GetSceneNo() == SCENE_STAGE1_1 && GetPlayerPos(0).z >= 9000.0f && GetPlayerPos(0).z <= 9550.0f && stateFlag == false) {
-		if (state == 0) state = 3;
-		stateFlag = true;
-		StopSound(SOUND_LABEL_SE_RUN);
-	}
-	else if (GetSceneNo() == SCENE_STAGE1_1 && GetPlayerPos(0).z >= 18000.0f && GetPlayerPos(0).z <= 18050.0f && stateFlag == false) {
-		if (state == 0) state = 4;
-		stateFlag = true;
-		StopSound(SOUND_LABEL_SE_RUN);
-	}
+			}
+			else count++;
 
-	// tipsフラグ回収
-	if (GetSceneNo() == SCENE_STAGE1_1 && GetPlayerPos(0).z >= 860.0f && GetPlayerPos(0).z <= 900.0f) {
-		stateFlag = false;
-	}
-	else if (GetSceneNo() == SCENE_STAGE1_1 && GetPlayerPos(0).z >= 9560.0f && GetPlayerPos(0).z <= 9600.0f) {
-		stateFlag = false;
-	}
-	else if (GetSceneNo() == SCENE_STAGE1_1 && GetPlayerPos(0).z >= 18600.0f && GetPlayerPos(0).z <= 18700.0f) {
-		stateFlag = false;
+		}
+
+		if (!IsBlock())
+		{
+			if (count > 30)
+			{
+				state = game_claer;
+				count = 0;
+		
+			}
+			else count++;
+
+		}
+
+		break;
+	case game_deth:		// ボールが画面下にいったとき
+
+		break;
+	case game_claer:	// ブロックを全て壊した時
+
+		break;
 	}
 
 
-	if (GetSceneNo() == SCENE_ENDING && GetPlayerPos(0).z >= 19000.0f) {
-		StartChange(SCENE_SELECT, 2);
-	}
+	if (GetPlayerPos(0).z > 80000.0f)	StartChange(SCENE_SELECT, 0);
 }
 
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawGame()
+void DrawSelect()
 {
+
 	// Zバッファ無効
 	SetZBuffer(false);
-	// 背景
 	DrawBg();
 	// Zバッファ有効
 	SetZBuffer(true);
-	// フィールド
-	DrawField();
-	// 道路
-	DrawStreet();
-	// プレイヤー
-	DrawPlayer();
-	// エネミー
-	DrawDEnemy();
-	// オブジェクト
-	DrawObject();
-	// エンドロール
+	//DrawStreet();
+	//DrawField();
+	//DrawObject();
+	DrawBlock();
 	DrawTex();
-	// アイテム
-	DrawItem();
-	// Effekseerエフェクト
-	DrawEFManeger();
-
+	DrawPlayer();
 	SetZWrite(false);	// 影設定変更影を綺麗に
-	DrawShadow();
 	SetZWrite(true);
-	// Zバッファ有効
+	// Zバッファ無効
 	SetZBuffer(false);
 	SetBlendState(BS_ALPHABLEND);
-	if (GetSceneNo() != SCENE_ENDING) {
-		// 加速エフェクト
-		DrawAcceleration();
-		if (state == 1 || state != 2) {	// ポーズ時
-			DrawCombo();
-			DrawLife();
-		}
-	}
-	DrawUI();
-	if (GetSceneNo() != SCENE_ENDING) {
-		if (state == 2) {	// tips時
-			DrawCombo();
-			DrawLife();
-		}
-		DrawScore();
-	}
+	//DrawUI();
 	//DrawTransition();
+	DrawScore();
+
+	switch (state)
+	{
+	case game_start:
+		SetPolygonSize(300, 50);
+		SetPolygonPos(PolyPos.x, PolyPos.y);
+		SetPolygonColor(0, 0, 0);
+		DrawPolygon(DeviceContext);
+
+		break;
+	case game_main:
+
+		break;
+	case game_deth:
+		SetPolygonSize(300, 50);
+		SetPolygonPos(PolyPos.x, PolyPos.y);
+		SetPolygonColor(255, 0, 0);
+		DrawPolygon(DeviceContext);
+
+		break;
+	case game_claer:
+		SetPolygonSize(300, 50);
+		SetPolygonPos(PolyPos.x, PolyPos.y);
+		SetPolygonColor(0, 0, 255);
+		DrawPolygon(DeviceContext);
+
+		break;
+	}
+
 	SetBlendState(BS_NONE);
 	// Zバッファ有効
 	SetZBuffer(true);
-}
-
-int GetState()
-{
-	return state;
-}
-
-void SetState(int no)
-{
-	state = no;
 }

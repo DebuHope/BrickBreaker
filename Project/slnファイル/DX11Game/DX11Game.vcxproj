@@ -170,13 +170,11 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Combo.cpp" />
     <ClCompile Include="Debugproc.cpp" />
-    <ClCompile Include="DEnemy.cpp" />
     <ClCompile Include="EffekseerManeger.cpp" />
     <ClCompile Include="EF_Acceleration.cpp" />
     <ClCompile Include="EF_Maneger.cpp" />
     <ClCompile Include="Endroll.cpp" />
     <ClCompile Include="Gauge.cpp" />
-    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Life.cpp" />
     <ClCompile Include="Number.cpp" />
     <ClCompile Include="Load.cpp" />
@@ -184,22 +182,17 @@
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Transition.cpp" />
-    <ClCompile Include="Field.cpp" />
-    <ClCompile Include="Street.cpp" />
-    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Select.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Polygon.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Title.cpp" />
-    <ClCompile Include="Select.cpp" />
-    <ClCompile Include="UI.cpp" />
+    <ClCompile Include="Game.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssimpModel.h" />
@@ -209,13 +202,11 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Combo.h" />
     <ClInclude Include="Debugproc.h" />
-    <ClInclude Include="DEnemy.h" />
     <ClInclude Include="EffekseerManeger.h" />
     <ClInclude Include="EF_Acceleration.h" />
     <ClInclude Include="EF_Maneger.h" />
     <ClInclude Include="Endroll.h" />
     <ClInclude Include="Gauge.h" />
-    <ClInclude Include="Item.h" />
     <ClInclude Include="Life.h" />
     <ClInclude Include="Number.h" />
     <ClInclude Include="Load.h" />
@@ -223,23 +214,18 @@
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Transition.h" />
-    <ClInclude Include="Field.h" />
-    <ClInclude Include="Street.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Polygon.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Shadow.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Select.h" />
-    <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="AssimpPixel.hlsl">

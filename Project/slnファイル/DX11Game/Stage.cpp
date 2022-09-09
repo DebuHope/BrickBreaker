@@ -3,10 +3,7 @@
 // êßçÏÅFå¸èoën
 //======================================================================================
 #include "Stage.h"
-#include "DEnemy.h"
-#include "Item.h"
 #include "Player.h"
-#include "Object.h"
 #include "Endroll.h"
 
 #define	CENTER	(0.0f)
@@ -20,7 +17,7 @@ void SetStage()
 {
 	switch (GetSceneNo())
 	{
-	case SCENE_STAGE1_1:
+	case SCENE_STAGE_01:
 
 		//SetSign(XMFLOAT3(-140.0f, 0.0f, 1000.0f), XMFLOAT3(0.0f, -35.0f, 0.0f));
 		//SetItem(XMFLOAT3(CENTER, 0.0f, 1500.0f), 0);

@@ -89,21 +89,6 @@ void DrawCombo()
 	SetPolygonAngle(0.0f);
 	SetPolygonAlpha(1.0f);
 
-	if (GetScore(2) == 0 && GetScore(2) < 20) {
-		SetPolygonColor(1.0f, 1.0f, 1.0f);
-	}
-	else if (GetScore(2) >= 20 && GetScore(2) < 50) {
-		SetPolygonColor(0.0f, 0.5f, 1.0f);
-	}
-	else if (GetScore(2) >= 50 && GetScore(2) < 80) {
-		SetPolygonColor(0.0f, 1.0f, 0.0f);
-	}
-	else if (GetScore(2) >= 80 && GetScore(2) < 100) {
-		SetPolygonColor(1.0f, 1.0f, 0.0f);
-	}
-	else if (GetScore(2) >= 100) {
-		SetPolygonColor(1.0f, 0.0f, 0.0f);
-	}
 	// ƒ|ƒŠƒSƒ“‚Ìî•ñİ’è
 	SetPolygonPos(g_Position.x, g_Position.y);		// À•W
 	SetPolygonSize(COMBO_SIZE_X, COMBO_SIZE_Y);	// ‘å‚«‚³

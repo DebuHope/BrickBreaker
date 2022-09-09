@@ -8,7 +8,6 @@
 #include"Texture.h"
 #include"polygon.h"
 #include "Player.h"
-#include "UI.h"
 
 // マクロ定義
 #define BG_POS_X	(0)
@@ -18,13 +17,13 @@
 
 #define MAX_TEXTURE (7)
 
-#define BG_STAGE1		_T("data/texture/sky.png")
+#define BG_STAGE1		_T("data/texture/title_bg_01.png")
 #define BG_STAGE2		_T("data/texture/yuyake.png")
 #define BG_STAGE3		_T("data/texture/night.png")
 #define BG_HOLE			_T("data/texture/hole2.png")
 #define BG_IKEHOLE		_T("data/texture/ikeHole.png")
 #define BG_HOLE3		_T("data/texture/hole5.png")
-#define BG_TITLE		_T("data/texture/UI/TitleScreen.png")
+#define BG_TITLE		_T("data/texture/title_bg_01.png")
 
 // グローバル変数宣言
 static ID3D11ShaderResourceView* g_pTexture[MAX_TEXTURE];	// テクスチャ	
@@ -105,10 +104,6 @@ void UpdateBg()
 		g_Alpha += 0.1f;
 		if (g_Alpha > 2.0f)	temp = false;
 	}
-
-	if (GetUIState() == 0) DrawBGNo = 0;
-	else if (GetUIState() == 1) DrawBGNo = 1;
-	else if (GetUIState() == 2) DrawBGNo = 2;
 }
 
 //======================================================================================
@@ -130,9 +125,6 @@ void DrawBg()
 	SetPolygonFrameSize(g_TexFrameSize.x, g_TexFrameSize.y);	// 横幅縦幅
 	if (GetSceneNo() == SCENE_TITLE) {
 		SetPolygonTexture(g_pTexture[4]);
-	}
-	else if (GetSceneNo() == SCENE_ENDING) {
-		SetPolygonTexture(g_pTexture[0]);	// テクスチャ指定
 	}
 	else {
 		SetPolygonTexture(g_pTexture[DrawBGNo]);

@@ -7,7 +7,6 @@
 #include "Endroll.h"
 #include "main.h"
 #include "Player.h"
-#include "Shadow.h"
 #include "Input.h"
 #include "Collision.h"
 
@@ -18,7 +17,7 @@
 
 #define MAX_TEXT_MODEL		(1)
 
-#define TEXT_SPEED		(1.0f)
+#define TEXT_SPEED		(2.0f)
 
 //*****************************************************************************
 // 構造体定義
@@ -33,6 +32,7 @@ typedef struct _tText
 	XMFLOAT3 scl;	// 拡大率
 	XMFLOAT3 vel;	// 速度
 	XMFLOAT3 last;	// 直前の座標
+	int	invincibleTime;
 	int nShadowIdx;
 	bool	KillFlag;	// キルフラグ
 	int		nState;	// 行動(0以下:未使用 1以上:通常)
@@ -44,9 +44,10 @@ typedef struct _tText
 static CAssimpModel	g_model[MAX_TEXT_MODEL];	// モデルデータ
 static tText			g_ball[MAX_TEXT];
 
-static float speed = 1.0f;
-static float angleX = 35.0f;
-static float angleY = 35.0f;
+static float speed = 1.4f;
+static float angleX = 270.0f;
+static float angleY = 50.0f;
+static int a = 0;
 
 HRESULT LoadText(void)
 {
@@ -68,12 +69,13 @@ void InitText(void)
 	// 位置・回転・スケールの初期設定
 	for (int i = 0; i < MAX_TEXT; i++)
 	{
-		g_ball[i].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_ball[i].pos = XMFLOAT3(0.0f, 30.0f, 0.0f);
 		g_ball[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_ball[i].scl = XMFLOAT3(3.0f, 3.0f, 3.0f);
 		g_ball[i].vel = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_ball[i].nState = 1;
 		g_ball[i].KillFlag = false;
+		g_ball[i].invincibleTime = 0;
 	}
 
 	// ワールドマトリックスの初期化
@@ -90,10 +92,6 @@ void InitText(void)
 //=============================================================================
 void UninitText(void)
 {
-	// 影の解放
-	for (int i = 0; i < MAX_TEXT; i++) {
-		ReleaseShadow(g_ball[i].nShadowIdx);
-	}
 	// モデルの解放
 	//for (int i = 0; i < MAX_TEXT_MODEL; i++) {
 	//	g_model[i].Release();
@@ -107,21 +105,16 @@ void UpdateText(void)
 {
 	for (int i = 0; i < MAX_TEXT; i++)
 	{
+		if (g_ball[i].KillFlag) continue;
 		if (g_ball[i].nState == 0)	continue;
 
-		if (GetKeyPress(VK_Z))
-		{
-			angleX -= 10.0f;
-		}
-		else if (GetKeyPress(VK_X))
+		g_ball[i].invincibleTime++;
+
+		if (GetKeyPress(VK_X))
 		{
 			angleX += 10.0f;
 		}
 
-		if (GetKeyPress(VK_C))
-		{
-			angleY -= 10.0f;
-		}
 		else if (GetKeyPress(VK_V))
 		{
 			angleY += 10.0f;
@@ -137,17 +130,31 @@ void UpdateText(void)
 		g_ball[i].vel.y = (float)(0.0f + speed * sinf(angleY * (M_PI / 180.0f)));
 
 		// ボールがパドルに当たった時
-		if (g_ball[i].KillFlag == true) {
+		if (g_ball[i].pos.y < GetPlayerPos(0).y + 4.5f && g_ball[i].pos.y > GetPlayerPos(0).y - 2.0f &&
+			g_ball[i].pos.x <= GetPlayerPos(0).x + 18.0f && g_ball[i].pos.x >= GetPlayerPos(0).x &&
+			g_ball[i].invincibleTime > 20)
+		{
+			g_ball[i].pos.y = -71.0f;
 			angleY += 180;
-			if (g_ball[i].pos.y < -75.0f)
+			if (angleX < 270.0f && angleX > 90.0f)
 			{
-				g_ball[i].pos.y -= 2.0f;
+				angleX = 270 + rand() % 180;
 			}
-			if (g_ball[i].pos.y > -75.0f)
+			g_ball[i].invincibleTime = 0;
+			a = 1;
+		}
+		else if (g_ball[i].pos.y < GetPlayerPos(0).y + 4.5f && g_ball[i].pos.y > GetPlayerPos(0).y - 2.0f &&
+			g_ball[i].pos.x <= GetPlayerPos(0).x && g_ball[i].pos.x >= GetPlayerPos(0).x - 18.0f &&
+			g_ball[i].invincibleTime > 20)
+		{
+			g_ball[i].pos.y = -71.0f;
+			angleY += 180;
+			if (angleX < 90.0f || angleX > 270.0f)
 			{
-				g_ball[i].pos.y += 2.0f;
+				angleX = 90 + rand() % 180;
 			}
-			g_ball[i].KillFlag = false;
+			g_ball[i].invincibleTime = 0;
+			a = 2;
 		}
 
 
@@ -157,22 +164,31 @@ void UpdateText(void)
 		g_ball[i].pos.z += g_ball[i].vel.z;
 
 		// 画面外判定
-		if (g_ball[i].pos.x > 98.0f || g_ball[i].pos.x < -98.0f)
+		if (g_ball[i].pos.x > 120.5f || g_ball[i].pos.x < -120.5f)
 		{	// 左右
 			angleX += 180.0f;
 		}
-		else if (g_ball[i].pos.y > 98.0f || g_ball[i].pos.y < -98.0f)
+		else if (g_ball[i].pos.y > 90.0f)
 		{	// 上下
 			angleY += 180.0f;
 		}
+		else if (g_ball[i].pos.y < -98.0f)
+			g_ball[i].KillFlag = true;
 
 		// angle 正規化
+		if (angleX < 0.0f)
+		{
+			angleX *= -1.0f;
+		}
+		if (angleY < 0.0f)
+		{
+			angleY *= -1.0f;
+		}
 		angleX = (int)angleX % 360;
 		angleY = (int)angleY % 360;
 
 		// 影を消す
 		if (g_ball[i].pos.y <= 0.0f) {
-			ReleaseShadow(g_ball[i].nShadowIdx);
 			g_ball[i].nShadowIdx = -1;
 		}
 
@@ -207,12 +223,10 @@ void UpdateText(void)
 		// ワールドマトリックス設定
 		XMStoreFloat4x4(&g_ball[i].mtxWorld, mtxWorld);
 
-		// 影の移動
-		MoveShadow(g_ball[i].nShadowIdx, g_ball[i].pos);
-
 #ifdef _DEBUG
 
 		PrintDebugProc("BallAngle X : %0.1f Y : %0.1f\n\n\n", angleX, angleY);
+		PrintDebugProc("%d\n\n\n", a);
 #endif // _DEBUG
 	}
 }
@@ -246,9 +260,6 @@ int SetText(XMFLOAT3 pos, XMFLOAT3 scl, XMFLOAT3 dir, int type)
 		pText->scl = scl;
 		pText->nState = 1;	// 出現
 		pText->nType = type;
-
-		// 影の作成
-		pText->nShadowIdx = CreateShadow(pText->pos, 20.0f);
 
 		return i;	// 番号を返す
 	}
@@ -305,10 +316,10 @@ XMFLOAT3 GetTextSize(int no)
 // 生存しているか
 bool IsText(int no)
 {
-	if (no < 0 || no >= MAX_TEXT || g_ball[no].KillFlag == true) {
-		return false;
+	if (no >= 0 || no >= MAX_TEXT) {
+		return g_ball[no].KillFlag;
 	}
-	return true;
+
 }
 
 // 表示しない
@@ -318,7 +329,6 @@ void DestroyText(int no)
 		return;
 	}
 	g_ball[no].nState = 0;
-	ReleaseShadow(g_ball[no].nShadowIdx);
 	g_ball[no].pos = XMFLOAT3(0.0f, -1000.0f, 0.0f);
 }
 
@@ -328,7 +338,6 @@ void PadlleBall(int no)
 		return;
 	}
 
-	g_ball[no].KillFlag = true;
 }
 
 void SetAngleX(float _angleX)
@@ -356,14 +365,14 @@ void CheckBallHitDirection(XMFLOAT3 * BCenter, XMFLOAT3 * BSize)
 	// どの方向から接触したのかチェック
 	for (int i = 0; i < MAX_TEXT; i++) {
 		// ブロックの幅の範囲にいた : yのみ反転
-		if ((BCenter->x - BSize->x / 2) <= g_ball[i].last.x &&
-			(BCenter->x + BSize->x / 2) >= g_ball[i].last.x) {
+		if ((BCenter->x - BSize->x / 2) <= g_ball[i].last.x + 3.0f &&
+			(BCenter->x + BSize->x / 2) >= g_ball[i].last.x - 3.0f) {
 			SetAngleY(180.0f);
 			//g_ball[i].vel.y = -g_ball[i].vel.y;
 		}
 		// ブロックの高さの範囲にいた : xのみ反転
-		if ((BCenter->y - BSize->y / 2) <= g_ball[i].last.y &&
-			(BCenter->y + BSize->y / 2) >= g_ball[i].last.y) {
+		if ((BCenter->y - BSize->y / 2) <= g_ball[i].last.y + 3.0f &&
+			(BCenter->y + BSize->y / 2) >= g_ball[i].last.y - 3.0f) {
 			SetAngleX(180.0f);
 			//g_ball[i].vel.x = -g_ball[i].vel.x;
 		}

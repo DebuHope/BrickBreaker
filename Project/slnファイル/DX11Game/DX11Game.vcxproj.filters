@@ -48,9 +48,6 @@
     <ClCompile Include="Light.cpp">
       <Filter>ソース ファイル\Common.cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Shadow.cpp">
-      <Filter>ソース ファイル\Common.cpp</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>ソース ファイル\Main.cpp</Filter>
     </ClCompile>
@@ -60,22 +57,7 @@
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル\Common.cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>ソース ファイル\Main.cpp</Filter>
-    </ClCompile>
     <ClCompile Include="Bg.cpp">
-      <Filter>ソース ファイル\Object.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Field.cpp">
-      <Filter>ソース ファイル\Object.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Street.cpp">
-      <Filter>ソース ファイル\Object.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>ソース ファイル\Object.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="DEnemy.cpp">
       <Filter>ソース ファイル\Object.cpp</Filter>
     </ClCompile>
     <ClCompile Include="EffekseerManeger.cpp">
@@ -90,12 +72,6 @@
     <ClCompile Include="Number.cpp">
       <Filter>ソース ファイル\Common.cpp</Filter>
     </ClCompile>
-    <ClCompile Include="UI.cpp">
-      <Filter>ソース ファイル\UI.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Select.cpp">
-      <Filter>ソース ファイル\Main.cpp</Filter>
-    </ClCompile>
     <ClCompile Include="Transition.cpp">
       <Filter>ソース ファイル\UI.cpp</Filter>
     </ClCompile>
@@ -104,9 +80,6 @@
     </ClCompile>
     <ClCompile Include="Score.cpp">
       <Filter>ソース ファイル\UI.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>ソース ファイル\Object.cpp</Filter>
     </ClCompile>
     <ClCompile Include="Sound.cpp">
       <Filter>ソース ファイル\Common.cpp</Filter>
@@ -131,6 +104,12 @@
     </ClCompile>
     <ClCompile Include="Block.cpp">
       <Filter>ソース ファイル\Object.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Select.cpp">
+      <Filter>ソース ファイル\Main.cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>ソース ファイル\Main.cpp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,9 +143,6 @@
     <ClInclude Include="Input.h">
       <Filter>ヘッダー ファイル\Common.h</Filter>
     </ClInclude>
-    <ClInclude Include="Shadow.h">
-      <Filter>ヘッダー ファイル\Common.h</Filter>
-    </ClInclude>
     <ClInclude Include="Title.h">
       <Filter>ヘッダー ファイル\Main.h</Filter>
     </ClInclude>
@@ -182,18 +158,6 @@
     <ClInclude Include="Bg.h">
       <Filter>ヘッダー ファイル\Object.h</Filter>
     </ClInclude>
-    <ClInclude Include="Field.h">
-      <Filter>ヘッダー ファイル\Object.h</Filter>
-    </ClInclude>
-    <ClInclude Include="Street.h">
-      <Filter>ヘッダー ファイル\Object.h</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>ヘッダー ファイル\Object.h</Filter>
-    </ClInclude>
-    <ClInclude Include="DEnemy.h">
-      <Filter>ヘッダー ファイル\Object.h</Filter>
-    </ClInclude>
     <ClInclude Include="EffekseerManeger.h">
       <Filter>ヘッダー ファイル\Effect.h</Filter>
     </ClInclude>
@@ -206,9 +170,6 @@
     <ClInclude Include="Number.h">
       <Filter>ヘッダー ファイル\Common.h</Filter>
     </ClInclude>
-    <ClInclude Include="UI.h">
-      <Filter>ヘッダー ファイル\UI.h</Filter>
-    </ClInclude>
     <ClInclude Include="Select.h">
       <Filter>ヘッダー ファイル\Main.h</Filter>
     </ClInclude>
@@ -220,9 +181,6 @@
     </ClInclude>
     <ClInclude Include="Score.h">
       <Filter>ヘッダー ファイル\UI.h</Filter>
-    </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>ヘッダー ファイル\Object.h</Filter>
     </ClInclude>
     <ClInclude Include="Sound.h">
       <Filter>ヘッダー ファイル\Common.h</Filter>
